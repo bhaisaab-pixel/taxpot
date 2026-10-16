@@ -1,0 +1,1867 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TaxPot — your yours-to-keep balance</title>
+<meta name="description" content="Split every payment into what's yours to keep, what HMRC wants, and what the Student Loans Company takes. Local-first, no accounts.">
+<meta name="theme-color" content="#0A1210">
+
+<!-- Link previews. Relative paths resolve against wherever the app is deployed. -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="TaxPot — know your yours-to-keep balance">
+<meta property="og:description" content="Split every payment into what's yours to keep, what HMRC wants, and what the Student Loans Company takes. Local-first, no accounts.">
+<meta property="og:image" content="brand/social-preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="TaxPot — know your yours-to-keep balance">
+<meta name="twitter:description" content="Split every payment into what's yours to keep, what HMRC wants, and what the Student Loans Company takes.">
+<meta name="twitter:image" content="brand/social-preview.png">
+
+<!-- The mark, inline so the app still works as a single file -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%230A1210'/%3E%3Cg transform='translate(2.4 2.4) scale(0.8)'%3E%3Cpath d='M8 5h8 M8.5 5v1.5a7 7 0 1 0 7 0V5 M7 12.5h10' stroke='%234CC7A5' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --ground:#F2F5F3; --surface:#FFFFFF; --surface-2:#E9EFEB;
+  --ink:#111E1B; --ink-2:#3F534E; --muted:#5C6E69;
+  --rule:#D7E0DB; --rule-strong:#BCCAC4;
+  --accent:#0B6B58; --accent-ink:#08543F; --accent-soft:#DBEDE6; --on-accent:#FFFFFF;
+  --tax:#A85A15; --tax-soft:#F6E7D5;
+  --loan:#544C8C; --loan-soft:#E5E2F2;
+  --pension:#1F6C86; --pension-soft:#DBEAF1;
+  --danger:#A3232B; --danger-soft:#F7E0E1;
+  --warn:#8A6100; --warn-soft:#FBEFCF;
+  --shadow-1:0 1px 2px rgba(17,30,27,.05);
+  --shadow-2:0 1px 2px rgba(17,30,27,.05), 0 12px 32px -18px rgba(17,30,27,.35);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0A1210; --surface:#111A17; --surface-2:#17221E;
+    --ink:#E7EEEA; --ink-2:#B0C0BA; --muted:#859892;
+    --rule:#212F2A; --rule-strong:#33443E;
+    --accent:#4CC7A5; --accent-ink:#7FDCC0; --accent-soft:#0F2E26; --on-accent:#08150F;
+    --tax:#E09A4E; --tax-soft:#2E210E;
+    --loan:#A79FE4; --loan-soft:#1F1B36;
+    --pension:#5FB6D4; --pension-soft:#0D2731;
+    --danger:#E8767C; --danger-soft:#331618;
+    --warn:#E3B75A; --warn-soft:#2B2210;
+    --shadow-1:0 1px 2px rgba(0,0,0,.4);
+    --shadow-2:0 1px 2px rgba(0,0,0,.4), 0 12px 32px -18px rgba(0,0,0,.9);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0A1210; --surface:#111A17; --surface-2:#17221E;
+  --ink:#E7EEEA; --ink-2:#B0C0BA; --muted:#859892;
+  --rule:#212F2A; --rule-strong:#33443E;
+  --accent:#4CC7A5; --accent-ink:#7FDCC0; --accent-soft:#0F2E26; --on-accent:#08150F;
+  --tax:#E09A4E; --tax-soft:#2E210E;
+  --loan:#A79FE4; --loan-soft:#1F1B36;
+  --pension:#5FB6D4; --pension-soft:#0D2731;
+  --danger:#E8767C; --danger-soft:#331618;
+  --warn:#E3B75A; --warn-soft:#2B2210;
+  --shadow-1:0 1px 2px rgba(0,0,0,.4);
+  --shadow-2:0 1px 2px rgba(0,0,0,.4), 0 12px 32px -18px rgba(0,0,0,.9);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--ground);color:var(--ink);
+  font-family:"Public Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;
+  padding-bottom:64px;
+}
+h1,h2,h3{font-family:"Bricolage Grotesque","Public Sans",sans-serif;font-weight:700;line-height:1.14;letter-spacing:-.02em;margin:0;text-wrap:balance}
+p{margin:0}
+.num{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+[hidden]{display:none !important}
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+.wrap{max-width:940px;margin:0 auto;padding:0 20px}
+
+/* ---- header ---- */
+header{background:var(--surface);border-bottom:1px solid var(--rule);position:sticky;top:0;z-index:30}
+.hrow{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 0}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand-glyph{width:32px;height:32px;border-radius:8px;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;flex:none}
+.brand-name{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:-.03em}
+.brand-name span{color:var(--accent)}
+.hctl{display:flex;align-items:center;gap:8px}
+.yearpick{display:flex;align-items:center;gap:6px;background:var(--ground);border:1px solid var(--rule-strong);border-radius:9px;padding:4px 6px}
+.yearpick select{border:0;background:none;font:inherit;font-size:.84rem;font-weight:600;color:var(--ink);padding:2px 4px;cursor:pointer}
+.iconbtn{width:44px;height:44px;border-radius:8px;border:1px solid var(--rule-strong);background:var(--ground);color:var(--ink-2);display:grid;place-items:center;cursor:pointer;flex:none}
+.iconbtn:hover{color:var(--ink);border-color:var(--ink-2)}
+
+/* ---- tabs ---- */
+nav.tabs{display:flex;gap:2px;border-bottom:1px solid var(--rule);background:var(--surface);overflow-x:auto;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs .wrap{display:flex;gap:2px}
+.tab{
+  font:inherit;font-weight:600;font-size:.9rem;cursor:pointer;background:none;border:0;
+  color:var(--muted);padding:11px 14px;border-bottom:2px solid transparent;white-space:nowrap
+}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--accent-ink);border-bottom-color:var(--accent)}
+
+main{padding-top:26px}
+.panel{display:flex;flex-direction:column;gap:20px}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:20px;box-shadow:var(--shadow-1)}
+.card>h2{font-size:1.05rem;margin-bottom:4px}
+.card>.sub{font-size:.85rem;color:var(--muted);margin-bottom:14px}
+
+/* ---- split ---- */
+.entryrow{display:grid;gap:12px;grid-template-columns:1fr;align-items:end}
+@media(min-width:600px){.entryrow{grid-template-columns:1fr auto}}
+label.lbl{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.09em;font-weight:700;color:var(--muted);margin-bottom:6px}
+.amtwrap{position:relative;display:flex;align-items:center}
+.amtwrap .sym{position:absolute;left:15px;font-size:1.5rem;font-weight:600;color:var(--muted);font-family:"IBM Plex Mono",monospace;pointer-events:none}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--ground);border:1px solid var(--rule-strong);border-radius:10px;padding:10px 12px;width:100%}
+input[type=number]{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]{-moz-appearance:textfield;appearance:textfield}
+#amount{padding:13px 14px 13px 38px;font-size:1.6rem;font-weight:600}
+select{cursor:pointer}
+.btn{font:inherit;font-weight:600;cursor:pointer;border-radius:10px;padding:12px 20px;background:var(--accent);color:var(--on-accent);border:1px solid var(--accent);white-space:nowrap;transition:filter .15s}
+.btn:hover{filter:brightness(1.08)}
+.btn:active{transform:translateY(1px)}
+.btn.sm{padding:8px 14px;font-size:.85rem}
+.btn.ghost{background:var(--surface);color:var(--ink-2);border-color:var(--rule-strong)}
+.btn.ghost:hover{background:var(--surface-2);color:var(--ink)}
+.btn.link{background:none;border:0;color:var(--accent-ink);padding:2px 0;font-size:.86rem;font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.btn.dngr{background:none;border:0;color:var(--danger);padding:2px 0;font-size:.86rem;font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+
+.pots{display:grid;gap:11px;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));margin-top:18px}
+.pot{border:1px solid var(--rule);border-top:3px solid var(--pc);border-radius:11px;padding:14px 15px;background:var(--ground)}
+.pot .k{font-size:.67rem;text-transform:uppercase;letter-spacing:.09em;font-weight:700;color:var(--pc)}
+.pot .v{display:block;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;font-size:1.45rem;font-weight:600;letter-spacing:-.03em;margin:5px 0 3px}
+.pot .m{font-size:.75rem;color:var(--muted);line-height:1.45}
+.pot.keep{--pc:var(--accent)} .pot.tax{--pc:var(--tax)} .pot.loan{--pc:var(--loan)} .pot.pension{--pc:var(--pension)}
+.workings{margin-top:14px;font-size:.83rem;color:var(--muted);line-height:1.55}
+.workings b{color:var(--ink-2)}
+
+/* ---- stats + band ---- */
+.stats{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));margin-bottom:20px}
+.stats dt{font-size:.65rem;text-transform:uppercase;letter-spacing:.09em;font-weight:700;color:var(--muted);margin:0}
+.stats dd{margin:3px 0 0;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;font-size:1.18rem;font-weight:600;letter-spacing:-.02em}
+.bandbar{display:flex;height:32px;border:1px solid var(--rule-strong);border-radius:8px;overflow:hidden}
+.bseg{position:relative;height:100%}
+.bfill{position:absolute;inset:0 auto 0 0;background:var(--accent);opacity:.82;transition:width .5s cubic-bezier(.22,1,.36,1)}
+.bandkey{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:9px;font-size:.71rem;color:var(--muted)}
+.bandkey span{display:inline-flex;align-items:center;gap:6px}
+.bandkey i{width:9px;height:9px;border-radius:2px;border:1px solid var(--rule-strong)}
+.bandcap{margin-top:11px;font-size:.87rem;color:var(--ink-2)}
+.bandcap b{color:var(--ink);font-weight:600}
+
+/* ---- notices ---- */
+.notice{display:flex;gap:11px;align-items:flex-start;border-radius:10px;padding:12px 14px;font-size:.87rem;line-height:1.5;border-left:3px solid var(--accent);background:var(--accent-soft);color:var(--ink)}
+.notice.warn{border-left-color:var(--warn);background:var(--warn-soft)}
+.notice.alert{border-left-color:var(--danger);background:var(--danger-soft)}
+.notice svg{flex:none;margin-top:2px}
+.notice b{font-weight:700}
+.stack{display:flex;flex-direction:column;gap:10px}
+
+/* ---- ledger ---- */
+.segbar{display:inline-flex;background:var(--ground);border:1px solid var(--rule-strong);border-radius:9px;padding:3px;gap:2px;margin-bottom:14px}
+.segbar button{font:inherit;font-size:.84rem;font-weight:600;cursor:pointer;background:none;border:0;color:var(--muted);padding:6px 14px;border-radius:6px}
+.segbar button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow-1)}
+.rows{display:flex;flex-direction:column;gap:7px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 13px;border:1px solid var(--rule);border-radius:10px;background:var(--ground)}
+.row .l{min-width:0}
+.row .amt{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;font-weight:600}
+.row .amt.neg{color:var(--tax)}
+.row .meta{font-size:.75rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cattag{background:var(--surface-2);border-radius:5px;padding:1px 6px;font-size:.7rem;color:var(--ink-2)}
+.row .r{display:flex;align-items:center;gap:14px;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;font-size:.81rem;flex:none}
+.row .r .t{color:var(--tax)} .row .r .n{color:var(--muted)}
+@media(max-width:560px){.row .r .n{display:none}}
+.del{background:none;border:0;cursor:pointer;color:var(--muted);border-radius:8px;line-height:0;min-width:40px;min-height:40px;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.del:hover{color:var(--danger);background:var(--danger-soft)}
+.empty{padding:24px;text-align:center;border:1px dashed var(--rule-strong);border-radius:10px;color:var(--muted);font-size:.88rem}
+.addrow{display:grid;gap:10px;grid-template-columns:1fr;margin-bottom:14px;padding:14px;border:1px dashed var(--rule-strong);border-radius:11px}
+@media(min-width:640px){.addrow{grid-template-columns:130px 170px 1fr auto}}
+
+/* ---- forecast ---- */
+.due{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.duecard{border:1px solid var(--rule);border-radius:11px;padding:15px;background:var(--ground)}
+.duecard .d{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;color:var(--muted)}
+.duecard .a{display:block;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;font-size:1.5rem;font-weight:600;margin:5px 0 4px;letter-spacing:-.03em}
+.duecard .n{font-size:.76rem;color:var(--muted);line-height:1.45}
+.duecard.big{border-color:var(--tax);border-left:3px solid var(--tax)}
+.breakdown{width:100%;border-collapse:collapse;margin-top:16px;font-size:.88rem}
+.breakdown th,.breakdown td{padding:8px 10px;border-bottom:1px solid var(--rule);text-align:left}
+.breakdown td.n,.breakdown th.n{text-align:right;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+.breakdown tr.total td{border-bottom:0;border-top:2px solid var(--rule-strong);font-weight:700}
+.breakdown thead th{font-size:.67rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+
+/* ---- settings drawer ---- */
+.scrim{position:fixed;inset:0;background:rgba(8,16,14,.55);backdrop-filter:blur(3px);z-index:60;display:grid;place-items:end center}
+@media(min-width:700px){.scrim{place-items:center}}
+.drawer{background:var(--surface);width:min(560px,100%);max-height:92vh;overflow-y:auto;border-radius:16px 16px 0 0;padding:22px;border:1px solid var(--rule)}
+@media(min-width:700px){.drawer{border-radius:16px}}
+.drawer h2{font-size:1.15rem;margin-bottom:16px}
+.fields{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.field .hint{font-size:.75rem;color:var(--muted);margin-top:5px;line-height:1.45}
+.check{display:flex;gap:10px;align-items:flex-start;padding:12px;border:1px solid var(--rule);border-radius:10px;background:var(--ground);cursor:pointer}
+.check input{width:auto;margin:2px 0 0;flex:none;accent-color:var(--accent)}
+.check .t{font-size:.88rem;font-weight:600}
+.check .h{font-size:.76rem;color:var(--muted);line-height:1.45}
+.drawer-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:20px;padding-top:16px;border-top:1px solid var(--rule);flex-wrap:wrap}
+
+/* ---- data / import ---- */
+.drop{border:2px dashed var(--rule-strong);border-radius:12px;padding:26px;text-align:center;color:var(--muted);font-size:.88rem;cursor:pointer;background:var(--ground)}
+.drop:hover,.drop.over{border-color:var(--accent);color:var(--accent-ink);background:var(--accent-soft)}
+.preview{max-height:340px;overflow:auto;border:1px solid var(--rule);border-radius:10px;margin-top:14px}
+.preview table{width:100%;border-collapse:collapse;font-size:.82rem}
+.preview th,.preview td{padding:7px 9px;border-bottom:1px solid var(--rule);text-align:left;white-space:nowrap}
+.preview thead th{position:sticky;top:0;background:var(--surface-2);font-size:.66rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);z-index:1}
+.preview td.n{text-align:right;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.preview th:first-child,.preview td:first-child{padding:0}
+.preview th:first-child label,.preview td:first-child label{display:flex;align-items:center;justify-content:center;min-width:40px;min-height:40px;cursor:pointer}
+.preview input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
+.preview select{padding:8px 6px;font-size:.78rem;border-radius:6px;min-height:36px}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;align-items:center}
+
+/* ---- methodology ---- */
+.meth{font-size:.88rem;color:var(--ink-2);display:flex;flex-direction:column;gap:12px}
+.meth code{font-family:"IBM Plex Mono",monospace;font-size:.85em;background:var(--surface-2);padding:1px 5px;border-radius:4px}
+.ratetable{width:100%;border-collapse:collapse;font-size:.85rem;margin-top:6px}
+.ratetable th,.ratetable td{padding:7px 10px;border-bottom:1px solid var(--rule);text-align:left}
+.ratetable td.n,.ratetable th.n{text-align:right;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ratetable thead th{font-size:.66rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.src{font-size:.78rem;color:var(--muted)}
+.src a{color:var(--accent-ink)}
+
+/* ---- toast ---- */
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120%);background:var(--ink);color:var(--ground);padding:11px 18px;border-radius:10px;font-size:.88rem;font-weight:600;z-index:80;transition:transform .28s cubic-bezier(.22,1,.36,1);box-shadow:var(--shadow-2);max-width:calc(100vw - 40px)}
+#toast.on{transform:translateX(-50%) translateY(0)}
+
+footer{margin-top:34px;padding:20px 0;border-top:1px solid var(--rule);font-size:.79rem;color:var(--muted)}
+@media(prefers-reduced-motion:reduce){*{transition-duration:.01ms !important;animation-duration:.01ms !important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap hrow">
+    <div class="brand">
+      <span class="brand-glyph" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 5h8"/><path d="M8.5 5v1.5a7 7 0 1 0 7 0V5"/><path d="M7 12.5h10"/></svg>
+      </span>
+      <span class="brand-name">TaxPot<span>.io</span></span>
+    </div>
+    <div class="hctl">
+      <div class="yearpick">
+        <label class="sr" for="sel-year">Tax year</label>
+        <select id="sel-year"></select>
+        <label class="sr" for="sel-region">Where you live</label>
+        <select id="sel-region"></select>
+      </div>
+      <button class="iconbtn" id="btn-settings" aria-label="Your situation and settings">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="Sections">
+  <div class="wrap" role="tablist" aria-label="Sections">
+    <button class="tab" id="tab-split"    role="tab" aria-selected="true"  aria-controls="p-split"    tabindex="0">Split</button>
+    <button class="tab" id="tab-ledger"   role="tab" aria-selected="false" aria-controls="p-ledger"   tabindex="-1">Ledger</button>
+    <button class="tab" id="tab-forecast" role="tab" aria-selected="false" aria-controls="p-forecast" tabindex="-1">Forecast</button>
+    <button class="tab" id="tab-data"     role="tab" aria-selected="false" aria-controls="p-data"     tabindex="-1">Data</button>
+    <button class="tab" id="tab-method"   role="tab" aria-selected="false" aria-controls="p-method"   tabindex="-1">Method</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <!-- ================= SPLIT ================= -->
+  <div class="panel" id="p-split" role="tabpanel" aria-labelledby="tab-split" tabindex="0">
+    <div class="card">
+      <h2>New payment</h2>
+      <p class="sub">How much of this is actually yours?</p>
+      <div class="entryrow">
+        <div>
+          <label class="lbl" for="amount">Amount received</label>
+          <div class="amtwrap"><span class="sym" aria-hidden="true">£</span>
+            <input type="number" id="amount" placeholder="0.00" min="0" step="0.01" inputmode="decimal"></div>
+        </div>
+        <button class="btn" id="btn-split">Split into pots</button>
+      </div>
+      <div id="split-out" hidden>
+        <div class="pots" id="pots"></div>
+        <p class="workings" id="workings"></p>
+        <div class="btnrow">
+          <button class="btn sm" id="btn-save">Save to ledger</button>
+          <button class="btn link" id="btn-share">Make a share card</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>This tax year</h2>
+      <p class="sub" id="ytd-sub"></p>
+      <dl class="stats">
+        <div><dt>Income</dt><dd class="num" id="s-income">£0</dd></div>
+        <div><dt>Expenses</dt><dd class="num" id="s-exp">£0</dd></div>
+        <div><dt>Profit</dt><dd class="num" id="s-profit">£0</dd></div>
+        <div><dt>Set aside</dt><dd class="num" id="s-reserve" style="color:var(--tax)">£0</dd></div>
+        <div><dt>Yours to keep</dt><dd class="num" id="s-keep" style="color:var(--accent)">£0</dd></div>
+        <div><dt>Effective rate</dt><dd class="num" id="s-rate">0.0%</dd></div>
+      </dl>
+      <div class="bandbar" id="bandbar" role="img" aria-label="Where your income sits in the tax bands"></div>
+      <div class="bandkey" id="bandkey"></div>
+      <p class="bandcap" id="bandcap"></p>
+    </div>
+
+    <div class="stack" id="notices"></div>
+  </div>
+
+  <!-- ================= LEDGER ================= -->
+  <div class="panel" id="p-ledger" role="tabpanel" aria-labelledby="tab-ledger" tabindex="0" hidden>
+    <div class="card">
+      <h2>Ledger</h2>
+      <p class="sub">Everything you have logged for <span id="ledger-year"></span>.</p>
+      <div class="segbar" role="group" aria-label="Filter ledger">
+        <button data-lf="all" aria-pressed="true">All</button>
+        <button data-lf="income" aria-pressed="false">Income</button>
+        <button data-lf="expense" aria-pressed="false">Expenses</button>
+      </div>
+      <div class="addrow">
+        <div><label class="lbl" for="add-kind">Type</label>
+          <select id="add-kind"><option value="income">Income</option><option value="expense">Expense</option></select></div>
+        <div><label class="lbl" for="add-category">Category</label>
+          <select id="add-category"></select></div>
+        <div><label class="lbl" for="add-desc">Description</label>
+          <input type="text" id="add-desc" placeholder="Client invoice, software, travel…"></div>
+        <div><label class="lbl" for="add-amt">Amount</label>
+          <div style="display:flex;gap:8px"><input type="number" id="add-amt" min="0" step="0.01" placeholder="0.00" inputmode="decimal" style="width:110px">
+          <button class="btn sm" id="btn-add">Add</button></div></div>
+      </div>
+      <div class="rows" id="rows"></div>
+    </div>
+  </div>
+
+  <!-- ================= FORECAST ================= -->
+  <div class="panel" id="p-forecast" role="tabpanel" aria-labelledby="tab-forecast" tabindex="0" hidden>
+    <div class="card">
+      <h2>What you will owe, and when</h2>
+      <p class="sub" id="fc-sub"></p>
+      <div class="due" id="due"></div>
+      <table class="breakdown" id="fc-breakdown"></table>
+      <div class="stack" style="margin-top:16px" id="fc-notices"></div>
+    </div>
+  </div>
+
+  <!-- ================= DATA ================= -->
+  <div class="panel" id="p-data" role="tabpanel" aria-labelledby="tab-data" tabindex="0" hidden>
+    <div class="card">
+      <h2>Import from your bank</h2>
+      <p class="sub">Export a CSV from Monzo or Revolut, then drop it here. Nothing is uploaded &mdash; the file is read in your browser.</p>
+      <div class="drop" id="drop" tabindex="0" role="button">
+        <strong>Choose a CSV file</strong><br>or drag one here
+        <input type="file" id="file" accept=".csv,text/csv" hidden>
+      </div>
+      <div id="import-out" hidden>
+        <p class="sub" style="margin:14px 0 0" id="import-msg"></p>
+        <div class="preview" id="import-preview"></div>
+        <div class="btnrow">
+          <button class="btn sm" id="btn-import">Import selected</button>
+          <button class="btn ghost sm" id="btn-import-cancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Backup and restore</h2>
+      <p class="sub">Your data lives only in this browser. Clearing site data wipes it, so keep a backup.</p>
+      <div class="btnrow">
+        <button class="btn ghost sm" id="btn-export-json">Download backup (JSON)</button>
+        <button class="btn ghost sm" id="btn-export-csv">Export ledger (CSV)</button>
+        <button class="btn ghost sm" id="btn-restore">Restore from backup</button>
+        <input type="file" id="restore-file" accept=".json,application/json" hidden>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Danger zone</h2>
+      <p class="sub">Removes every payment, expense and setting from this browser.</p>
+      <button class="btn dngr" id="btn-wipe">Delete everything</button>
+    </div>
+  </div>
+
+  <!-- ================= METHOD ================= -->
+  <div class="panel" id="p-method" role="tabpanel" aria-labelledby="tab-method" tabindex="0" hidden>
+    <div class="card">
+      <h2>How the number is worked out</h2>
+      <div class="meth">
+        <p>A payment is never taxed on its own, because UK income tax is progressive &mdash; the same £1,000 is worth £1,000 to someone who has earned nothing yet this year and £510 to someone already in the higher-rate band. So TaxPot works out your whole-year liability twice and takes the difference:</p>
+        <p><code>split(payment) = liability(profit + payment) − liability(profit)</code></p>
+        <ul style="margin:0;padding-left:1.15rem">
+          <li>Profit is your logged income minus your expenses (or minus the £1,000 trading allowance, whichever you have chosen).</li>
+          <li>Income tax is worked out on your salary plus your profit, then your salary&rsquo;s own tax is subtracted &mdash; which puts the side income on top, where HMRC puts it.</li>
+          <li>Class 4 National Insurance applies to profit only, not to your salary.</li>
+          <li>Pension contributions reduce income tax but <em>not</em> Class 4 NI.</li>
+          <li>Student loan is charged on total income above your plan&rsquo;s threshold, also as a difference so a salary already over the threshold is not counted twice.</li>
+          <li>The personal allowance tapers away by £1 for every £2 of income over £100,000.</li>
+        </ul>
+        <h3 style="font-size:.95rem;margin-top:6px">Rates in use for <span id="meth-year"></span></h3>
+        <table class="ratetable" id="meth-rates"></table>
+        <p class="src" id="meth-src"></p>
+        <div id="meth-basis"></div>
+
+        <h3 style="font-size:.95rem;margin-top:14px">Keeping these rates current</h3>
+        <div id="freshness"></div>
+        <div class="btnrow">
+          <button class="btn sm" id="btn-check-rates">Check rates against gov.uk</button>
+          <button class="btn ghost sm" id="btn-revert-rates" hidden>Restore built-in rates</button>
+        </div>
+        <div id="rate-result"></div>
+
+        <p class="src">TaxPot helps you set money aside. It is not tax advice and it does not file anything with HMRC.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>TaxPot &mdash; local-first. Your figures never leave this browser.</footer>
+</main>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<div class="scrim" id="scrim" hidden>
+  <div class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title">
+    <h2 id="drawer-title">Your situation</h2>
+    <div class="fields">
+      <div class="field"><label class="lbl" for="set-other">Salary or other income</label>
+        <input type="number" id="set-other" min="0" step="100" inputmode="decimal">
+        <p class="hint">Gross pay from a job. This decides which band your side income starts in.</p></div>
+      <div class="field"><label class="lbl" for="set-plan">Student loan plan</label>
+        <select id="set-plan"></select>
+        <p class="hint">Charged only on income above your plan&rsquo;s threshold.</p></div>
+      <div class="field"><label class="lbl" for="set-pension">Pension contribution (%)</label>
+        <input type="number" id="set-pension" min="0" max="100" step="1" inputmode="numeric">
+        <p class="hint">Percent of side income paid into a pension.</p></div>
+      <div class="field"><label class="lbl" for="set-poa">Payments on account already made</label>
+        <input type="number" id="set-poa" min="0" step="10" inputmode="decimal">
+        <p class="hint">If HMRC already took advance payments for this year, put the total here.</p></div>
+    </div>
+    <div style="margin-top:14px" class="stack">
+      <label class="check"><input type="checkbox" id="set-trading">
+        <span><span class="t">Claim the £1,000 trading allowance</span>
+        <span class="h">Instead of deducting expenses. You cannot do both &mdash; TaxPot will tell you which is worth more.</span></span></label>
+    </div>
+    <div class="drawer-foot">
+      <button class="btn dngr" id="btn-wipe-2">Delete everything</button>
+      <button class="btn" id="btn-close-settings">Done</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== ENGINE:START =====
+   Pure functions only — no DOM, no storage. Extracted verbatim by tests/engine.test.js.
+   Rates verified 31 Aug 2026 against gov.uk, gov.scot and the SLC. */
+var TAX_YEARS = {
+  "2026/27": {
+    current: true, verified: "2026-08-31",
+    pa: 12570, taperStart: 100000, taperEnd: 125140,
+    regions: {
+      uk:  { label: "England, Wales & N. Ireland",
+             bands: [[37700,0.20],[125140,0.40],[Infinity,0.45]] },
+      sco: { label: "Scotland",
+             bands: [[3967,0.19],[16956,0.20],[31092,0.21],[62430,0.42],[125140,0.45],[Infinity,0.48]] }
+    },
+    ni: { lower: 12570, upper: 50270, main: 0.06, above: 0.02 },
+    class2: { spt: 7105, weekly: 3.65 },
+    sl: { plan1:{t:26900,r:0.09}, plan2:{t:29385,r:0.09}, plan4:{t:33795,r:0.09},
+          plan5:{t:25000,r:0.09}, pgl:{t:21000,r:0.06} },
+    tradingAllowance: 1000, vatThreshold: 90000,
+    poaMinimum: 1000, poaAtSourceLimit: 0.8
+  },
+  "2025/26": {
+    current: false, verified: "2026-08-31",
+    pa: 12570, taperStart: 100000, taperEnd: 125140,
+    regions: {
+      uk:  { label: "England, Wales & N. Ireland",
+             bands: [[37700,0.20],[125140,0.40],[Infinity,0.45]] },
+      sco: { label: "Scotland",
+             bands: [[2827,0.19],[14921,0.20],[31092,0.21],[62430,0.42],[125140,0.45],[Infinity,0.48]] }
+    },
+    ni: { lower: 12570, upper: 50270, main: 0.06, above: 0.02 },
+    class2: { spt: 6845, weekly: 3.50 },
+    sl: { plan1:{t:26065,r:0.09}, plan2:{t:28470,r:0.09}, plan4:{t:32745,r:0.09},
+          plan5:{t:25000,r:0.09}, pgl:{t:21000,r:0.06} },
+    tradingAllowance: 1000, vatThreshold: 90000,
+    poaMinimum: 1000, poaAtSourceLimit: 0.8
+  }
+};
+
+/* Future years, so you can plan ahead — but never pretending to know what has
+   not been published.
+
+   Budget 2025 (26 Nov 2025) froze the personal allowance at £12,570, the basic
+   rate limit at £37,700 and the Class 4 lower/upper profits limits through
+   2030/31, so those figures are set in statute rather than guessed. Student loan
+   thresholds, Class 2 amounts and the Scottish bands are set annually and are
+   not yet published for these years — they are carried forward as placeholders
+   and are flagged as such everywhere they are used.
+   https://www.gov.uk/government/publications/maintaining-income-tax-and-equivalent-national-insurance-contributions-thresholds-until-5-april-2031 */
+var PROVISIONAL_BASIS = {
+  "Personal allowance and income tax bands": "legislated",
+  "Class 4 NI thresholds":                   "legislated",
+  "Class 4 NI rates":                        "assumed",
+  "Class 2 NI":                              "estimated",
+  "Student loan thresholds":                 "estimated",
+  "Scottish bands":                          "estimated",
+  "Trading allowance and VAT threshold":     "assumed"
+};
+var BASIS_NOTE = {
+  legislated: "Fixed in statute for this year.",
+  assumed:    "No change announced, but not legislated this far ahead.",
+  estimated:  "Uprated every April and not yet published — carried forward from the last confirmed year."
+};
+
+(function(){
+  ["2027/28", "2028/29", "2029/30"].forEach(function(k){
+    var y = cloneYear(TAX_YEARS["2026/27"]);   // the frozen figures carry across exactly
+    y.current = false;
+    y.provisional = true;
+    y.verified = null;                          // a forecast is never "verified"
+    y.frozenUntil = "2030/31";
+    y.basis = PROVISIONAL_BASIS;
+    y.carriedFrom = "2026/27";
+    TAX_YEARS[k] = y;
+  });
+})();
+
+var PLAN_LABELS = { none:"None", plan1:"Plan 1", plan2:"Plan 2", plan4:"Plan 4",
+                    plan5:"Plan 5", pgl:"Postgraduate loan" };
+
+function n2(v){ var n = typeof v === "number" ? v : parseFloat(v); return isFinite(n) ? n : 0; }
+function clamp(v, lo, hi){ return Math.min(hi, Math.max(lo, v)); }
+function round2(v){ return Math.round((v + Number.EPSILON) * 100) / 100; }
+
+/* Personal allowance after the £100k taper. */
+function allowanceFor(y, income){
+  if (income <= y.taperStart) return y.pa;
+  return Math.max(0, y.pa - (income - y.taperStart) / 2);
+}
+
+/* Income tax on a total income, for one region. */
+function incomeTaxOn(y, region, income){
+  var bands = y.regions[region].bands;
+  var taxable = Math.max(0, income - allowanceFor(y, income));
+  var tax = 0, prev = 0;
+  for (var i = 0; i < bands.length; i++){
+    var top = bands[i][0], rate = bands[i][1];
+    tax += Math.max(0, Math.min(taxable, top) - prev) * rate;
+    prev = top;
+    if (taxable <= top) break;
+  }
+  return tax;
+}
+
+/* Class 4 NI on self-employed profit. */
+function class4On(y, profit){
+  var ni = y.ni;
+  return Math.max(0, Math.min(profit, ni.upper) - ni.lower) * ni.main
+       + Math.max(0, profit - ni.upper) * ni.above;
+}
+
+function loanOn(y, plan, income){
+  var p = y.sl[plan];
+  if (!p) return 0;
+  return Math.max(0, income - p.t) * p.r;
+}
+
+/* Taxable profit after expenses OR the trading allowance (never both). */
+function profitFrom(y, income, expenses, useTradingAllowance){
+  var deduction = useTradingAllowance
+    ? Math.min(y.tradingAllowance, income)
+    : expenses;
+  return Math.max(0, income - deduction);
+}
+
+/* Whole-year liability attributable to a given level of self-employed profit. */
+function liabilityFor(profit, cfg){
+  var y = TAX_YEARS[cfg.year], region = cfg.region;
+  var other = Math.max(0, n2(cfg.otherIncome));
+  var pension = profit * (clamp(n2(cfg.pensionRate), 0, 100) / 100);
+  var total = other + profit;
+
+  var tax  = Math.max(0, incomeTaxOn(y, region, Math.max(0, total - pension)) - incomeTaxOn(y, region, other));
+  var ni   = class4On(y, profit);
+  var loan = Math.max(0, loanOn(y, cfg.plan, total) - loanOn(y, cfg.plan, other));
+  return { tax: tax, ni: ni, loan: loan, pension: pension };
+}
+
+/* The marginal split of one payment on top of the profit already earned. */
+function splitPayment(amount, profitSoFar, cfg){
+  var a = liabilityFor(profitSoFar + amount, cfg);
+  var b = liabilityFor(profitSoFar, cfg);
+  var tax = a.tax - b.tax, ni = a.ni - b.ni, loan = a.loan - b.loan, pension = a.pension - b.pension;
+  return { tax: tax, ni: ni, loan: loan, pension: pension,
+           keep: amount - tax - ni - loan - pension };
+}
+
+/* Self Assessment bill and payments on account.
+   POA are based on income tax + Class 4 NI only — student loan is excluded.
+   No POA if the bill is under £1,000, or if 80%+ of all tax was collected at source. */
+function forecastFor(profit, cfg){
+  var y = TAX_YEARS[cfg.year], region = cfg.region;
+  var l = liabilityFor(profit, cfg);
+  var relevant = l.tax + l.ni;
+  var taxAtSource = incomeTaxOn(y, region, Math.max(0, n2(cfg.otherIncome)));
+  var totalTax = taxAtSource + relevant;
+  var sourceShare = totalTax > 0 ? taxAtSource / totalTax : 0;
+
+  var poaRequired = relevant > y.poaMinimum && sourceShare < y.poaAtSourceLimit;
+  var poa = poaRequired ? relevant / 2 : 0;
+  var alreadyPaid = Math.max(0, n2(cfg.poaPaid));
+  var balancing = Math.max(0, relevant + l.loan - alreadyPaid);
+
+  return {
+    incomeTax: l.tax, class4: l.ni, studentLoan: l.loan,
+    relevant: relevant, poaRequired: poaRequired, poaEach: poa,
+    alreadyPaid: alreadyPaid, balancing: balancing,
+    dueJan: balancing + poa, dueJul: poa,
+    sourceShare: sourceShare,
+    class2Voluntary: profit > 0 && profit < y.class2.spt ? y.class2.weekly * 52 : 0
+  };
+}
+
+/* Which UK tax year a date falls in. The year starts on 6 April. */
+function taxYearOf(date){
+  var d = new Date(date);
+  if (isNaN(d.getTime())) return null;
+  var y = d.getUTCFullYear();
+  var start = Date.UTC(y, 3, 6); // 6 April, compared in UTC so the offset cannot shift the boundary
+  var from = d.getTime() >= start ? y : y - 1;
+  return from + "/" + String((from + 1) % 100).padStart(2, "0");
+}
+
+/* Parse a date out of a bank CSV. UK exports use DD/MM/YYYY; Revolut uses
+   YYYY-MM-DD HH:MM:SS. Getting this wrong files income under the wrong tax year. */
+function parseBankDate(s){
+  s = String(s == null ? "" : s).trim();
+  if (!s) return null;
+  var iso = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if (iso) return new Date(Date.UTC(+iso[1], +iso[2] - 1, +iso[3]));
+  var uk = s.match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4})/);
+  if (uk){
+    var d = +uk[1], m = +uk[2], yr = +uk[3];
+    if (yr < 100) yr += 2000;
+    if (m > 12 && d <= 12){ var t = d; d = m; m = t; }  // unambiguously US-ordered
+    if (m < 1 || m > 12 || d < 1 || d > 31) return null;
+    return new Date(Date.UTC(yr, m - 1, d));
+  }
+  var fb = new Date(s);
+  return isNaN(fb.getTime()) ? null : fb;
+}
+
+/* Find a column by header name, in order of NAME priority (not column position),
+   so a "Type" column cannot outrank the "Name" column we actually want. */
+function findColumn(head, names){
+  var lower = head.map(function(h){ return String(h).toLowerCase().trim(); });
+  var i, j;
+  for (j = 0; j < names.length; j++)
+    for (i = 0; i < lower.length; i++)
+      if (lower[i] === names[j]) return i;
+  for (j = 0; j < names.length; j++)
+    for (i = 0; i < lower.length; i++)
+      if (lower[i].indexOf(names[j]) === 0) return i;
+  return -1;
+}
+
+/* Band segments for the progress bar, as total-income boundaries. */
+function bandSegments(y, region){
+  var pa = y.pa, out = [{ from: 0, to: pa, rate: 0, label: "Personal allowance" }];
+  var bands = y.regions[region].bands, prev = 0;
+  for (var i = 0; i < bands.length; i++){
+    var top = bands[i][0];
+    if (!isFinite(top)) break;
+    out.push({ from: Math.min(pa + prev, y.taperEnd), to: Math.min(pa + top, y.taperEnd),
+               rate: bands[i][1], label: Math.round(bands[i][1]*100) + "%" });
+    prev = top;
+  }
+  return out;
+}
+
+/* VAT registration is triggered by taxable turnover exceeding £90,000 in ANY
+   rolling 12-month period — not the tax year. A check anchored to 6 April is
+   only an approximation and can miss a genuine breach mid-year. This uses
+   calendar-month arithmetic (not a fixed 365-day count) so leap years don't
+   shift the window by a day. */
+function rollingTurnover(entries, asOf){
+  var end = new Date(asOf);
+  var start = new Date(Date.UTC(
+    end.getUTCFullYear(), end.getUTCMonth() - 12, end.getUTCDate(),
+    end.getUTCHours(), end.getUTCMinutes(), end.getUTCSeconds(), end.getUTCMilliseconds()));
+  var total = 0;
+  entries.forEach(function(e){
+    if ((e.kind || "income") !== "income") return;
+    var t = new Date(e.date);
+    if (isNaN(t.getTime())) return;
+    if (t >= start && t <= end) total += n2(e.amount);
+  });
+  return total;
+}
+
+function vatStatus(entries, asOf, threshold){
+  var turnover = rollingTurnover(entries, asOf);
+  var pct = threshold > 0 ? turnover / threshold : 0;
+  return { turnover: turnover, pct: pct, mustRegister: pct >= 1, approaching: pct >= 0.8 };
+}
+
+/* ---------------------------------------------------------------------------
+   Rate freshness, and reading the published rates back off gov.uk.
+
+   These are pure string -> object functions so they can be tested against saved
+   fixtures of the real gov.uk text (tests/fixtures/*.txt). A scraper of tax
+   rates without tests is a liability, so nothing here touches the network or
+   the DOM — the app fetches and passes the text in.
+   --------------------------------------------------------------------------- */
+
+var GOV_SOURCES = {
+  "income-tax":   { url:  "https://www.gov.uk/api/content/income-tax-rates",
+                    page: "https://www.gov.uk/income-tax-rates",
+                    label: "Income tax rates and bands" },
+  "ni":           { url:  "https://www.gov.uk/api/content/self-employed-national-insurance-rates",
+                    page: "https://www.gov.uk/self-employed-national-insurance-rates",
+                    label: "Class 2 and Class 4 National Insurance" },
+  "student-loan": { url:  "https://www.gov.uk/api/content/repaying-your-student-loan",
+                    page: "https://www.gov.uk/repaying-your-student-loan/what-you-pay",
+                    label: "Student loan thresholds" },
+  "scottish":     { url:  "https://www.gov.uk/api/content/scottish-income-tax",
+                    page: "https://www.gov.uk/scottish-income-tax",
+                    label: "Scottish income tax bands" }
+};
+
+/* Flatten a gov.uk Content API document to plain text. Guides hold their
+   content in details.parts; simple pages use details.body. */
+function govText(doc){
+  var det = (doc && doc.details) || {};
+  var parts = det.parts || [];
+  var body = parts.length
+    ? parts.map(function(p){ return p.body || ""; }).join(" ")
+    : (det.body || "");
+  var t = String(body).replace(/<[^>]+>/g, " ");
+  t = t.replace(/&pound;/g, "£").replace(/&amp;/g, "&").replace(/&#39;/g, "'")
+       .replace(/&nbsp;/g, " ").replace(/&quot;/g, '"').replace(/’/g, "'");
+  return t.replace(/\s+/g, " ").trim();
+}
+
+function money2num(s){ return parseFloat(String(s).replace(/[£,\s]/g, "")); }
+
+/* Personal allowance, taper, and the England/Wales/NI bands. */
+function extractIncomeTax(text){
+  var out = {}, m;
+  m = text.match(/standard Personal Allowance is £([\d,]+)/i);
+  if (m) out.pa = money2num(m[1]);
+  m = text.match(/by £1 for every £2 that your adjusted net income is above £([\d,]+)/i);
+  if (m) out.taperStart = money2num(m[1]);
+  m = text.match(/allowance is zero if your income is £([\d,]+) or above/i);
+  if (m) out.taperEnd = money2num(m[1]);
+  m = text.match(/Basic rate £[\d,]+ to £([\d,]+) ([\d.]+)%/i);
+  if (m){ out.basicTo = money2num(m[1]); out.basicRate = parseFloat(m[2]) / 100; }
+  m = text.match(/Higher rate £[\d,]+ to £([\d,]+) ([\d.]+)%/i);
+  if (m){ out.higherTo = money2num(m[1]); out.higherRate = parseFloat(m[2]) / 100; }
+  m = text.match(/Additional rate over £[\d,]+ ([\d.]+)%/i);
+  if (m) out.additionalRate = parseFloat(m[1]) / 100;
+  return out;
+}
+
+/* Class 4 limits and rates, plus the Class 2 small profits threshold. */
+function extractNI(text){
+  var out = {}, m;
+  m = text.match(/tax year (\d{4}) to (\d{4})/i);
+  if (m) out.year = m[1] + "/" + m[2].slice(2);
+  m = text.match(/([\d.]+)% on profits over £([\d,]+) up to £([\d,]+)/i);
+  if (m){ out.main = parseFloat(m[1]) / 100; out.lower = money2num(m[2]); out.upper = money2num(m[3]); }
+  var all = text.match(/([\d.]+)% on profits over £[\d,]+(?! up to)/gi);
+  if (all && all.length){
+    var last = all[all.length - 1].match(/([\d.]+)%/);
+    if (last) out.above = parseFloat(last[1]) / 100;
+  }
+  m = text.match(/profits are £([\d,]+) or more a year/i);
+  if (m) out.class2Spt = money2num(m[1]);
+  m = text.match(/Class 2 rate for tax year[^£]*£([\d.]+) a week/i);
+  if (m) out.class2Weekly = parseFloat(m[1]);
+  return out;
+}
+
+/* All five student loan plan thresholds. */
+function extractStudentLoans(text){
+  var out = {}, keys = { "Plan 1":"plan1", "Plan 2":"plan2", "Plan 4":"plan4", "Plan 5":"plan5" };
+  Object.keys(keys).forEach(function(k){
+    var re = new RegExp("have a " + k + " student loan[\\s\\S]{0,200}?a month or £([\\d,]+) a year", "i");
+    var m = text.match(re);
+    if (m) out[keys[k]] = money2num(m[1]);
+  });
+  var pg = text.match(/Postgraduate Loan[\s\S]{0,400}?a month or £([\d,]+) a year/i);
+  if (pg) out.pgl = money2num(pg[1]);
+  return out;
+}
+
+/* Scottish bands for one tax year label, e.g. "2026/27". The page carries
+   several years, so scope the search to the right one before parsing. */
+function extractScottish(text, yearLabel){
+  var out = { bands: [] };
+  if (!yearLabel) return out;
+  var from = yearLabel.slice(0, 4), to = String(Number(from) + 1);
+  // The page labels the current year "2026 to 2027 Scottish Income Tax rates"
+  // but a previous year "the tax year 6 April 2025 to 5 April 2026".
+  var anchors = [
+    from + " to " + to + " Scottish Income Tax rates",
+    "6 April " + from + " to 5 April " + to,
+    from + " to " + to
+  ];
+  var idx = -1;
+  for (var a = 0; a < anchors.length && idx < 0; a++) idx = text.indexOf(anchors[a]);
+  if (idx < 0) return out;
+  var scope = text.slice(idx, idx + 900);
+  out.year = from + "/" + to.slice(2);
+  var re = /(Starter|Basic|Intermediate|Higher|Advanced) rate £[\d,]+ to £([\d,]+) ([\d.]+)%/gi, m;
+  while ((m = re.exec(scope)) !== null)
+    out.bands.push({ name: m[1], to: money2num(m[2]), rate: parseFloat(m[3]) / 100 });
+  var top = scope.match(/Top rate over £([\d,]+) ([\d.]+)%/i);
+  if (top) out.bands.push({ name: "Top", to: null, rate: parseFloat(top[2]) / 100 });
+  return out;
+}
+
+/* Compare what gov.uk publishes against the table the app is using.
+   Never applied automatically — the app shows this and the user decides. */
+function diffRates(year, region, fetched){
+  var rows = [];
+  function row(label, ours, theirs){
+    rows.push({ label: label, ours: ours, theirs: theirs,
+      status: (theirs == null || isNaN(theirs)) ? "unread"
+            : (Math.abs(ours - theirs) < 0.0001 ? "match" : "differs") });
+  }
+  var it = fetched["income-tax"] || {}, ni = fetched.ni || {}, sl = fetched["student-loan"] || {};
+  row("Personal allowance", year.pa, it.pa);
+  row("Allowance taper starts", year.taperStart, it.taperStart);
+  row("Allowance reaches zero", year.taperEnd, it.taperEnd);
+  if (region === "uk"){
+    var b = year.regions.uk.bands;
+    row("Basic rate ceiling", year.pa + b[0][0], it.basicTo);
+    row("Basic rate", b[0][1], it.basicRate);
+    row("Higher rate ceiling", b[1][0], it.higherTo);
+    row("Higher rate", b[1][1], it.higherRate);
+    row("Additional rate", b[2][1], it.additionalRate);
+  } else {
+    var sc = fetched.scottish || { bands: [] };
+    var segs = bandSegments(year, "sco");
+    for (var i = 0; i < sc.bands.length && i + 1 < segs.length; i++){
+      var mine = segs[i + 1], theirs = sc.bands[i];
+      row("Scottish " + theirs.name.toLowerCase() + " rate", mine.rate, theirs.rate);
+      if (theirs.to != null) row("Scottish " + theirs.name.toLowerCase() + " ceiling", mine.to, theirs.to);
+    }
+  }
+  row("Class 4 lower limit", year.ni.lower, ni.lower);
+  row("Class 4 upper limit", year.ni.upper, ni.upper);
+  row("Class 4 main rate", year.ni.main, ni.main);
+  row("Class 4 rate above upper limit", year.ni.above, ni.above);
+  row("Class 2 small profits threshold", year.class2.spt, ni.class2Spt);
+  row("Class 2 weekly rate", year.class2.weekly, ni.class2Weekly);
+  ["plan1","plan2","plan4","plan5","pgl"].forEach(function(k){
+    if (year.sl[k]) row("Student loan " + PLAN_LABELS[k] + " threshold", year.sl[k].t, sl[k]);
+  });
+  return rows;
+}
+
+/* Deep clone a tax year. Not JSON.stringify — that turns Infinity into null,
+   which would silently delete the top rate band. */
+function cloneYear(y){
+  var out = { current: y.current, verified: y.verified, pa: y.pa,
+    provisional: y.provisional, basis: y.basis, frozenUntil: y.frozenUntil,
+    carriedFrom: y.carriedFrom,
+    taperStart: y.taperStart, taperEnd: y.taperEnd, regions: {},
+    ni: { lower:y.ni.lower, upper:y.ni.upper, main:y.ni.main, above:y.ni.above },
+    class2: { spt:y.class2.spt, weekly:y.class2.weekly }, sl: {},
+    tradingAllowance: y.tradingAllowance, vatThreshold: y.vatThreshold,
+    poaMinimum: y.poaMinimum, poaAtSourceLimit: y.poaAtSourceLimit };
+  Object.keys(y.regions).forEach(function(k){
+    out.regions[k] = { label: y.regions[k].label,
+      bands: y.regions[k].bands.map(function(b){ return [b[0], b[1]]; }) };
+  });
+  Object.keys(y.sl).forEach(function(k){ out.sl[k] = { t:y.sl[k].t, r:y.sl[k].r }; });
+  return out;
+}
+
+/* gov.uk states band ceilings as total income; the engine stores them as taxable
+   income. They coincide at the taper end, where the allowance is already zero. */
+function toTaxable(total, y){ return total >= y.taperEnd ? total : total - y.pa; }
+
+/* JSON has no Infinity — JSON.stringify turns the open-ended top band into null.
+   Left alone that makes Math.min(taxable, null) === 0, so the highest band would
+   collect no tax at all. Anything read back out of storage must come through here. */
+function reviveYear(y){
+  if (!y || !y.regions) return y;
+  Object.keys(y.regions).forEach(function(k){
+    y.regions[k].bands = (y.regions[k].bands || []).map(function(b){
+      return [b[0] == null ? Infinity : b[0], b[1]];
+    });
+  });
+  return y;
+}
+
+/* Build a new tax year from what gov.uk published. Only ever called after the
+   user has seen the diff and confirmed. */
+function applyGovRates(year, fetched, todayISO){
+  var y = cloneYear(year);
+  var it = fetched["income-tax"] || {}, ni = fetched.ni || {},
+      sl = fetched["student-loan"] || {}, sc = fetched.scottish || { bands: [] };
+
+  if (isFinite(it.pa)) y.pa = it.pa;
+  if (isFinite(it.taperStart)) y.taperStart = it.taperStart;
+  if (isFinite(it.taperEnd)) y.taperEnd = it.taperEnd;
+
+  if (y.regions.uk){
+    if (isFinite(it.basicTo) && isFinite(it.basicRate))  y.regions.uk.bands[0] = [toTaxable(it.basicTo, y), it.basicRate];
+    if (isFinite(it.higherTo) && isFinite(it.higherRate)) y.regions.uk.bands[1] = [toTaxable(it.higherTo, y), it.higherRate];
+    if (isFinite(it.additionalRate)) y.regions.uk.bands[2] = [Infinity, it.additionalRate];
+  }
+  if (y.regions.sco && sc.bands && sc.bands.length >= 2){
+    y.regions.sco.bands = sc.bands.map(function(b){
+      return [b.to == null ? Infinity : toTaxable(b.to, y), b.rate];
+    });
+  }
+  if (isFinite(ni.lower)) y.ni.lower = ni.lower;
+  if (isFinite(ni.upper)) y.ni.upper = ni.upper;
+  if (isFinite(ni.main))  y.ni.main  = ni.main;
+  if (isFinite(ni.above)) y.ni.above = ni.above;
+  if (isFinite(ni.class2Spt))    y.class2.spt    = ni.class2Spt;
+  if (isFinite(ni.class2Weekly)) y.class2.weekly = ni.class2Weekly;
+
+  ["plan1","plan2","plan4","plan5","pgl"].forEach(function(k){
+    if (y.sl[k] && isFinite(sl[k])) y.sl[k].t = sl[k];
+  });
+  if (todayISO) y.verified = todayISO;
+  // Confirming published figures promotes a provisional year to a real one.
+  if (y.provisional && isFinite(it.pa) && isFinite(sl.plan2)){
+    y.provisional = false;
+    delete y.basis; delete y.carriedFrom;
+  }
+  return y;
+}
+
+/* gov.uk publishes the figures for whichever tax year is currently in force.
+   Applying them to a different year would stamp the wrong numbers as verified —
+   so the year gov.uk is talking about has to match the year being viewed. */
+function canApplyFetched(selectedYear, fetched){
+  var published = (fetched && fetched.ni && fetched.ni.year) || null;
+  if (!published)
+    return { ok: false, publishedYear: null,
+      reason: "TaxPot could not tell which tax year gov.uk is publishing, so these figures cannot be applied automatically." };
+  if (published !== selectedYear)
+    return { ok: false, publishedYear: published,
+      reason: "gov.uk is publishing figures for " + published + ", but you are viewing " + selectedYear +
+              ". They cannot be applied to a different year — switch to " + published + " to update it." };
+  return { ok: true, publishedYear: published, reason: null };
+}
+
+/* Is the rate table still trustworthy? UK rates change every 6 April. */
+function rateFreshness(now, years, lastCheckedISO){
+  var current = taxYearOf(now);
+  var checked = lastCheckedISO ? new Date(lastCheckedISO) : null;
+  var daysSince = checked && !isNaN(checked.getTime())
+    ? Math.floor((now - checked) / 86400000) : null;
+
+  if (!years[current])
+    return { status: "missing", currentYear: current, daysSince: daysSince,
+      message: "TaxPot has no rates for " + current + ", which is the current tax year. Check gov.uk and add them before relying on any figure here." };
+
+  if (years[current].provisional)
+    return { status: "provisional", currentYear: current, daysSince: daysSince,
+      message: current + " is the current tax year, but TaxPot only holds provisional rates for it. The income tax and Class 4 thresholds are frozen by statute and are right; the student loan, Class 2 and Scottish figures are last year's, carried forward. Check them against gov.uk." };
+
+  var verified = years[current].verified ? new Date(years[current].verified + "T00:00:00Z") : null;
+  var yearStart = new Date(Date.UTC(Number(current.slice(0, 4)), 3, 6));
+
+  if (!verified || verified < yearStart)
+    return { status: "stale", currentYear: current, daysSince: daysSince,
+      message: "These rates were last checked before " + current + " began on 6 April. Rates change every April — check them against gov.uk." };
+  if (daysSince === null)
+    return { status: "due", currentYear: current, daysSince: null,
+      message: "You have not checked these rates against gov.uk from this browser yet." };
+  if (daysSince > 180)
+    return { status: "due", currentYear: current, daysSince: daysSince,
+      message: "It has been " + daysSince + " days since these rates were checked against gov.uk." };
+  return { status: "ok", currentYear: current, daysSince: daysSince,
+    message: "Checked against gov.uk " + (daysSince === 0 ? "today" : daysSince + " days ago") + "." };
+}
+
+/* ===== ENGINE:END ===== */
+
+(function(){
+"use strict";
+
+var $ = function(id){ return document.getElementById(id); };
+
+/* Expense categories, loosely matched to the SA103 short-form boxes so the
+   CSV export lines up with what an accountant already expects to see. Income
+   is not categorised — the app only ever asks "how much", not "from whom". */
+var EXPENSE_CATEGORIES = [
+  { value:"goods",    label:"Cost of goods / materials" },
+  { value:"travel",   label:"Travel" },
+  { value:"office",   label:"Office & software" },
+  { value:"marketing",label:"Marketing & advertising" },
+  { value:"fees",     label:"Professional fees" },
+  { value:"finance",  label:"Bank & finance charges" },
+  { value:"other",    label:"Other" }
+];
+var EXPENSE_CATEGORY_LABEL = EXPENSE_CATEGORIES.reduce(function(m, c){ m[c.value] = c.label; return m; }, {});
+
+var DEFAULTS = { year:"2026/27", region:"uk", plan:"plan2", otherIncome:0,
+                 pensionRate:0, poaPaid:0, useTradingAllowance:false, lastRateCheck:null };
+var state = { entries: [], settings: Object.assign({}, DEFAULTS), pending: null,
+              ledgerFilter: "all", staged: null, overrides: null, fetched: null };
+
+/* ---------- storage (guarded: private mode throws) ---------- */
+function read(k, fb){ try{ var r = localStorage.getItem(k); return r ? JSON.parse(r) : fb; }catch(e){ return fb; } }
+function write(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ return false; } }
+function load(){
+  var e = read("taxpot_entries", null);
+  if (Array.isArray(e)) state.entries = e;
+  else { // migrate a v0.1 history array if present
+    var old = read("taxpot_history", []);
+    state.entries = (Array.isArray(old) ? old : []).map(function(o){
+      return { id: String(o.id), kind:"income", date:o.date, desc:"Imported from v0.1",
+               amount:n2(o.amount), year: o.year || taxYearOf(o.date) };
+    });
+  }
+  var s = read("taxpot_settings", null);
+  state.settings = Object.assign({}, DEFAULTS, s && typeof s === "object" ? s : {});
+  if (!TAX_YEARS[state.settings.year]) state.settings.year = DEFAULTS.year;
+  if (!TAX_YEARS[state.settings.year].regions[state.settings.region]) state.settings.region = "uk";
+}
+function persist(){ write("taxpot_entries", state.entries); write("taxpot_settings", state.settings); }
+
+/* ---------- helpers ---------- */
+var gbp0 = new Intl.NumberFormat("en-GB",{style:"currency",currency:"GBP",maximumFractionDigits:0});
+var gbp2 = new Intl.NumberFormat("en-GB",{style:"currency",currency:"GBP",minimumFractionDigits:2,maximumFractionDigits:2});
+function money(v){ return gbp2.format(v||0); }
+function money0(v){ return gbp0.format(v||0); }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+function cfg(){ return state.settings; }
+function y(){ return TAX_YEARS[state.settings.year]; }
+
+function forYear(){ var yr = state.settings.year;
+  return state.entries.filter(function(e){ return (e.year || taxYearOf(e.date)) === yr; }); }
+function totals(){
+  var rows = forYear(), income = 0, expenses = 0;
+  rows.forEach(function(e){ if (e.kind === "expense") expenses += n2(e.amount); else income += n2(e.amount); });
+  var profit = profitFrom(y(), income, expenses, state.settings.useTradingAllowance);
+  return { income: income, expenses: expenses, profit: profit, rows: rows };
+}
+function toast(msg){ var t = $("toast"); t.textContent = msg; t.classList.add("on");
+  clearTimeout(toast._t); toast._t = setTimeout(function(){ t.classList.remove("on"); }, 2600); }
+
+/* ---------- split ---------- */
+function doSplit(){
+  var amt = n2($("amount").value);
+  if (amt <= 0){ $("amount").focus(); return; }
+  state.pending = { amount: amt, r: splitPayment(amt, totals().profit, cfg()) };
+  renderSplit();
+}
+function renderSplit(){
+  var box = $("split-out");
+  if (!state.pending){ box.hidden = true; return; }
+  box.hidden = false;
+  var r = state.pending.r, amt = state.pending.amount, s = state.settings;
+  var pots = [
+    { c:"keep", k:"Yours to keep", v:r.keep, m:"Free to spend or reinvest." },
+    { c:"tax",  k:"Tax pot", v:r.tax + r.ni,
+      m:"Income tax " + money(r.tax) + " + Class 4 NI " + money(r.ni) + "." }
+  ];
+  if (s.plan !== "none") pots.push({ c:"loan", k:"Student loan", v:r.loan,
+      m: PLAN_LABELS[s.plan] + " — charged above the threshold only." });
+  if (r.pension > 0) pots.push({ c:"pension", k:"Pension", v:r.pension,
+      m:"Out of reach, and it lowers your tax." });
+
+  $("pots").innerHTML = pots.map(function(p){
+    return '<div class="pot '+p.c+'"><span class="k">'+p.k+'</span>'+
+           '<span class="v">'+money(p.v)+'</span><span class="m">'+p.m+'</span></div>'; }).join("");
+
+  var before = totals().profit;
+  $("workings").innerHTML = "You keep <b>" + (amt>0 ? (r.keep/amt*100).toFixed(1) : "0") + "%</b> of this payment. " +
+    "Worked out as the tax on " + money0(before + amt) + " of profit minus the tax on " + money0(before) +
+    ", so it reflects where this payment actually lands in your bands.";
+}
+
+/* ---------- stats + band bar ---------- */
+function renderStats(){
+  var t = totals(), Y = y(), s = state.settings;
+  var lia = liabilityFor(t.profit, cfg());
+  var reserve = lia.tax + lia.ni + lia.loan;
+  $("s-income").textContent  = money0(t.income);
+  $("s-exp").textContent     = money0(s.useTradingAllowance ? Math.min(Y.tradingAllowance, t.income) : t.expenses);
+  $("s-profit").textContent  = money0(t.profit);
+  $("s-reserve").textContent = money0(reserve);
+  $("s-keep").textContent    = money0(t.profit - reserve - lia.pension);
+  $("s-rate").textContent    = (t.profit > 0 ? (reserve/t.profit*100) : 0).toFixed(1) + "%";
+  $("ytd-sub").textContent   = state.settings.year + (Y.current ? " (current)" : "") + " · " +
+                               Y.regions[s.region].label;
+  $("ledger-year").textContent = state.settings.year;
+
+  var other = Math.max(0, n2(s.otherIncome)), total = other + t.profit;
+  var segs = bandSegments(Y, s.region);
+  // Scale to the top of the band they are actually in, so the meaningful part of
+  // the bar is not squashed into a corner by an empty additional-rate band.
+  var cur = 0;
+  for (var si = 0; si < segs.length; si++){ if (total < segs[si].to){ cur = si; break; } cur = si; }
+  var scale = isFinite(segs[cur].to) ? segs[cur].to : segs[Math.max(0, segs.length - 2)].to;
+  scale = Math.max(scale, segs[1] ? segs[1].to : 1);
+  var visible = segs.filter(function(g){ return g.from < scale; });
+  var shades = ["var(--accent-soft)","var(--tax-soft)","var(--loan-soft)","var(--pension-soft)","var(--warn-soft)","var(--danger-soft)"];
+
+  $("bandbar").innerHTML = visible.map(function(g, i){
+    var to = Math.min(g.to, scale), w = ((to - g.from)/scale)*100;
+    var f = clamp((total - g.from)/(to - g.from)*100, 0, 100);
+    return '<div class="bseg" style="width:'+w+'%;background:'+shades[i%shades.length]+'">'+
+           '<div class="bfill" style="width:'+f+'%"></div></div>'; }).join("");
+  $("bandkey").innerHTML = visible.map(function(g,i){
+    return '<span><i style="background:'+shades[i%shades.length]+'"></i>'+
+           (g.rate===0 ? "Allowance — 0%" : g.label + " to " + money0(g.to)) + '</span>'; }).join("");
+
+  var next = null;
+  for (var i=0;i<segs.length;i++){ if (total < segs[i].to){ next = segs[i]; break; } }
+  var cap = "<b>" + money0(total) + "</b> of total income this year";
+  cap += other > 0 ? " (" + money0(other) + " salary + " + money0(t.profit) + " profit). " : ". ";
+  if (next && isFinite(next.to)){
+    var after = segs[segs.indexOf(next) + 1];
+    var openBands = Y.regions[s.region].bands;
+    var topLabel = Math.round(openBands[openBands.length - 1][1] * 100) + "%";
+    cap += "Another <b>" + money0(next.to - total) + "</b> before the " +
+           (after ? after.label : topLabel) + " band starts.";
+  } else cap += "You are in the top band for your region.";
+  $("bandcap").innerHTML = cap;
+
+  renderNotices(t, Y);
+}
+
+function renderNotices(t, Y){
+  var out = [], s = state.settings;
+  var better = t.expenses > Y.tradingAllowance ? "expenses" : "allowance";
+  if (t.income > 0 && s.useTradingAllowance && better === "expenses")
+    out.push(["warn","Your expenses of " + money0(t.expenses) + " are worth more than the £1,000 trading allowance. Switch in settings to pay less tax."]);
+  if (t.income > 0 && !s.useTradingAllowance && t.expenses < Y.tradingAllowance && t.income > Y.tradingAllowance)
+    out.push(["","Your expenses are under £1,000. Claiming the trading allowance instead would cut your taxable profit by " + money0(Y.tradingAllowance - t.expenses) + "."]);
+  var vat = vatStatus(state.entries, new Date(), Y.vatThreshold);
+  if (vat.approaching)
+    out.push([vat.mustRegister ? "alert" : "warn",
+      vat.mustRegister
+        ? "Your turnover in the last 12 months is " + money0(vat.turnover) + ", over the £90,000 VAT threshold. You must register for VAT within 30 days."
+        : "Your turnover in the last 12 months is " + money0(vat.turnover) + " — " + Math.round(vat.pct*100) + "% of the £90,000 VAT threshold, checked on a real rolling basis rather than by tax year."]);
+  if (t.profit > 0 && t.profit < Y.class2.spt)
+    out.push(["","Your profit is under the £" + Y.class2.spt.toLocaleString("en-GB") + " small profits threshold, so Class 2 NI is not due. Paying it voluntarily (about " + money0(Y.class2.weekly*52) + " a year) protects your State Pension record."]);
+  if (Y.provisional){
+    var est = Object.keys(Y.basis).filter(function(k){ return Y.basis[k] === "estimated"; });
+    out.push(["warn","<b>" + state.settings.year + " is provisional.</b> The personal allowance, income tax bands and Class 4 thresholds are frozen by law until " +
+      Y.frozenUntil + ", so those are right. Not yet published for this year, and carried forward from " +
+      Y.carriedFrom + ": " + est.join(", ") + ". Treat the figures as a plan, not a bill."]);
+  } else if (!Y.current)
+    out.push(["warn","You are looking at " + state.settings.year + ", which is not the current tax year."]);
+  var fresh = rateFreshness(new Date(), TAX_YEARS, state.settings.lastRateCheck);
+  if (fresh.status === "missing" || fresh.status === "stale")
+    out.push([fresh.status === "missing" ? "alert" : "warn",
+      fresh.message + " Open <b>Method</b> to check them against gov.uk."]);
+
+  $("notices").innerHTML = out.map(function(nn){
+    return '<div class="notice '+nn[0]+'">'+
+      '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v5M12 16.5v.01"/></svg>'+
+      '<span>'+nn[1]+'</span></div>'; }).join("");
+}
+
+/* ---------- ledger ---------- */
+function renderLedger(){
+  var rows = forYear().slice().sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
+  if (state.ledgerFilter !== "all") rows = rows.filter(function(e){ return (e.kind||"income") === state.ledgerFilter; });
+  var el = $("rows");
+  if (!rows.length){ el.innerHTML = '<p class="empty">Nothing logged for '+state.settings.year+' yet.</p>'; return; }
+  el.innerHTML = rows.map(function(e){
+    var isExp = e.kind === "expense";
+    var r = isExp ? null : splitPayment(n2(e.amount), 0, cfg());
+    var catLabel = isExp ? (EXPENSE_CATEGORY_LABEL[e.category] || "Uncategorised") : "";
+    return '<div class="row"><div class="l">'+
+      '<div class="amt'+(isExp?' neg':'')+'">'+(isExp?"−":"")+money(e.amount)+'</div>'+
+      '<div class="meta">'+esc(e.desc || (isExp?"Expense":"Payment"))+' · '+
+      (isExp ? '<span class="cattag">'+esc(catLabel)+'</span> · ' : '') +
+      new Date(e.date).toLocaleDateString("en-GB",{day:"numeric",month:"short"})+'</div></div>'+
+      '<div class="r">'+(isExp?'<span class="n">deductible</span>':'')+
+      '<button class="del" data-del="'+e.id+'" aria-label="Delete"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button>'+
+      '</div></div>'; }).join("");
+}
+
+/* ---------- forecast ---------- */
+function renderForecast(){
+  var t = totals(), f = forecastFor(t.profit, cfg()), Y = y();
+  var endYear = parseInt(state.settings.year.slice(0,4),10) + 1;
+  $("fc-sub").textContent = "Based on " + money0(t.profit) + " of profit logged for " + state.settings.year + ". Deadlines shown are HMRC's.";
+
+  var cards = [
+    { d:"Due 31 January " + (endYear+1), a:f.dueJan, big:true,
+      n: f.poaRequired ? "Your bill for the year, plus the first payment on account for next year." : "Your Self Assessment bill for the year." },
+    { d:"Due 31 July " + (endYear+1), a:f.dueJul,
+      n: f.poaRequired ? "Second payment on account." : "Nothing due — payments on account are not required." },
+    { d:"Set aside now", a:f.incomeTax + f.class4 + f.studentLoan,
+      n:"What you owe on this year's profit so far." }
+  ];
+  $("due").innerHTML = cards.map(function(c){
+    return '<div class="duecard'+(c.big?' big':'')+'"><span class="d">'+c.d+'</span>'+
+      '<span class="a">'+money(c.a)+'</span><span class="n">'+c.n+'</span></div>'; }).join("");
+
+  var lines = [
+    ["Income tax", f.incomeTax], ["Class 4 National Insurance", f.class4],
+    ["Student loan", f.studentLoan]
+  ];
+  if (f.alreadyPaid > 0) lines.push(["Payments on account already made", -f.alreadyPaid]);
+  var html = '<thead><tr><th>Component</th><th class="n">Amount</th></tr></thead><tbody>';
+  lines.forEach(function(l){ html += '<tr><td>'+l[0]+'</td><td class="n">'+money(l[1])+'</td></tr>'; });
+  html += '<tr class="total"><td>Balancing payment</td><td class="n">'+money(f.balancing)+'</td></tr>';
+  if (f.poaRequired) html += '<tr class="total"><td>Each payment on account</td><td class="n">'+money(f.poaEach)+'</td></tr>';
+  $("fc-breakdown").innerHTML = html + '</tbody>';
+
+  var nn = [];
+  if (f.poaRequired)
+    nn.push(["warn","Because your bill is over £1,000, HMRC will also take a payment on account — half your bill again in January, and another half in July. Your first January is therefore <b>"+money(f.dueJan)+"</b>, not "+money(f.balancing)+". This is the bill that catches people out."]);
+  else if (f.relevant > 0 && f.relevant <= Y.poaMinimum)
+    nn.push(["","Your bill is under £1,000, so no payments on account are due."]);
+  else if (f.relevant > Y.poaMinimum)
+    nn.push(["","More than 80% of your tax is already collected through PAYE, so no payments on account are due."]);
+  if (f.class2Voluntary > 0)
+    nn.push(["","Class 2 NI is not due at this profit level. Paying voluntarily costs about "+money0(f.class2Voluntary)+" a year and protects your State Pension record."]);
+  $("fc-notices").innerHTML = nn.map(function(x){
+    return '<div class="notice '+x[0]+'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v5M12 16.5v.01"/></svg><span>'+x[1]+'</span></div>'; }).join("");
+}
+
+/* ---------- method ---------- */
+function renderMethod(){
+  var Y = y(), s = state.settings;
+  $("meth-year").textContent = state.settings.year + " · " + Y.regions[s.region].label;
+  var segs = bandSegments(Y, s.region), rows = "";
+  rows += '<tr><td>Personal allowance</td><td class="n">'+money0(Y.pa)+'</td><td class="n">0%</td></tr>';
+  segs.slice(1).forEach(function(g){
+    rows += '<tr><td>Band to '+(isFinite(g.to)?money0(g.to):"above")+'</td><td class="n">'+
+            (isFinite(g.to)?money0(g.to):"—")+'</td><td class="n">'+g.label+'</td></tr>'; });
+  rows += '<tr><td>Class 4 NI</td><td class="n">'+money0(Y.ni.lower)+' – '+money0(Y.ni.upper)+'</td><td class="n">'+(Y.ni.main*100)+'% / '+(Y.ni.above*100)+'%</td></tr>';
+  if (s.plan !== "none" && Y.sl[s.plan])
+    rows += '<tr><td>Student loan '+PLAN_LABELS[s.plan]+'</td><td class="n">'+money0(Y.sl[s.plan].t)+'</td><td class="n">'+(Y.sl[s.plan].r*100)+'%</td></tr>';
+  rows += '<tr><td>Trading allowance</td><td class="n">'+money0(Y.tradingAllowance)+'</td><td class="n">—</td></tr>';
+  rows += '<tr><td>VAT registration</td><td class="n">'+money0(Y.vatThreshold)+'</td><td class="n">—</td></tr>';
+  $("meth-rates").innerHTML = '<thead><tr><th>Item</th><th class="n">Threshold</th><th class="n">Rate</th></tr></thead><tbody>'+rows+'</tbody>';
+
+  if (Y.provisional){
+    var order = { legislated:0, assumed:1, estimated:2 };
+    var tone  = { legislated:"var(--accent)", assumed:"var(--muted)", estimated:"var(--tax)" };
+    var keys  = Object.keys(Y.basis).sort(function(a,b){ return order[Y.basis[a]] - order[Y.basis[b]]; });
+    $("meth-basis").innerHTML =
+      '<div class="notice warn"><span><b>' + state.settings.year + ' is provisional.</b> ' +
+      'Carried forward from ' + Y.carriedFrom + ' where the real figures are not published yet. ' +
+      'Use <b>Check rates against gov.uk</b> below once they are &mdash; it will fill them in and drop the provisional flag.</span></div>' +
+      '<table class="ratetable"><thead><tr><th>Figure</th><th>Basis</th><th>What that means</th></tr></thead><tbody>' +
+      keys.map(function(k){
+        var lvl = Y.basis[k];
+        return '<tr><td>' + k + '</td><td style="color:' + tone[lvl] + ';font-weight:700">' + lvl +
+               '</td><td style="font-size:.82rem;color:var(--muted)">' + BASIS_NOTE[lvl] + '</td></tr>';
+      }).join("") + '</tbody></table>';
+  } else $("meth-basis").innerHTML = "";
+
+  $("meth-src").innerHTML = (Y.verified
+      ? "Rates verified " + Y.verified + " against "
+      : "Frozen figures legislated to " + (Y.frozenUntil || "—") + "; the rest not yet published. Sources: ") +
+    '<a href="https://www.gov.uk/government/publications/rates-and-allowances-income-tax" target="_blank" rel="noopener">gov.uk</a>, ' +
+    '<a href="https://www.gov.scot/publications/scottish-income-tax-rates-and-bands/" target="_blank" rel="noopener">gov.scot</a> and ' +
+    '<a href="https://www.gov.uk/repaying-your-student-loan/what-you-pay" target="_blank" rel="noopener">the SLC</a>.';
+}
+
+/* ---------- rate checking against gov.uk ---------- */
+/* A pristine copy, so "restore built-in rates" always has something to go back to. */
+var BUILTIN = {};
+Object.keys(TAX_YEARS).forEach(function(k){ BUILTIN[k] = cloneYear(TAX_YEARS[k]); });
+
+function loadOverrides(){
+  var o = read("taxpot_rates", null);
+  if (!o || !o.years) return;
+  Object.keys(o.years).forEach(function(k){ if (TAX_YEARS[k]) TAX_YEARS[k] = reviveYear(o.years[k]); });
+  state.overrides = o;
+}
+function saveOverride(yearKey, year){
+  var o = state.overrides || { years: {} };
+  o.years[yearKey] = year;
+  o.appliedAt = new Date().toISOString();
+  o.source = "gov.uk Content API";
+  state.overrides = o;
+  TAX_YEARS[yearKey] = year;
+  write("taxpot_rates", o);
+}
+function revertOverrides(){
+  Object.keys(BUILTIN).forEach(function(k){ TAX_YEARS[k] = cloneYear(BUILTIN[k]); });
+  state.overrides = null;
+  try { localStorage.removeItem("taxpot_rates"); } catch (e) {}
+}
+
+function renderFreshness(){
+  var f = rateFreshness(new Date(), TAX_YEARS, state.settings.lastRateCheck);
+  var tone = f.status === "ok" ? "" : (f.status === "due" ? "warn" : "alert");
+  var extra = state.overrides
+    ? " Using rates fetched from gov.uk on " + new Date(state.overrides.appliedAt).toLocaleDateString("en-GB") + "."
+    : "";
+  $("freshness").innerHTML =
+    '<div class="notice ' + tone + '">' +
+    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2"/></svg>' +
+    '<span>' + f.message + extra + '</span></div>';
+  $("btn-revert-rates").hidden = !state.overrides;
+  return f;
+}
+
+function renderRateRows(rows, note, gate){
+  var differs = rows.filter(function(r){ return r.status === "differs"; });
+  var unread  = rows.filter(function(r){ return r.status === "unread"; });
+  function fmt(v){
+    if (v == null || isNaN(v)) return "—";
+    if (v > 0 && v < 1) return (v * 100).toFixed(v * 100 % 1 ? 1 : 0) + "%";
+    return v % 1 ? money(v) : money0(v);   // £3.65 a week must not round to £4
+  }
+  var html = '<p class="sub" style="margin:14px 0 6px">' + note + '</p>' +
+    '<div style="overflow-x:auto"><table class="ratetable"><thead><tr><th>Figure</th>' +
+    '<th class="n">TaxPot</th><th class="n">gov.uk</th><th></th></tr></thead><tbody>';
+  rows.forEach(function(r){
+    var mark = r.status === "match" ? '<span style="color:var(--accent)">matches</span>'
+             : r.status === "differs" ? '<span style="color:var(--danger);font-weight:700">differs</span>'
+             : '<span style="color:var(--muted)">not read</span>';
+    html += '<tr><td>' + r.label + '</td><td class="n">' + fmt(r.ours) + '</td><td class="n">' +
+            fmt(r.theirs) + '</td><td>' + mark + '</td></tr>';
+  });
+  html += '</tbody></table></div>';
+  if (gate && !gate.ok)
+    html += '<div class="notice warn" style="margin-top:12px"><span><b>These cannot be applied here.</b> ' +
+            gate.reason + ' The comparison above is still useful — it shows which of this year’s figures are ' +
+            'frozen and already correct — but it is not confirmation of the ones that are still estimates.</span></div>';
+  else if (differs.length)
+    html += '<div class="notice alert" style="margin-top:12px">' +
+      '<span><b>' + differs.length + ' figure' + (differs.length > 1 ? 's differ' : ' differs') +
+      ' from gov.uk.</b> Read the rows above before applying — this changes what you owe.</span></div>' +
+      '<div class="btnrow"><button class="btn sm" id="btn-apply-rates">Use the gov.uk figures</button></div>';
+  else if (unread.length === rows.length)
+    html += '<div class="notice warn" style="margin-top:12px"><span>Nothing could be read from gov.uk. ' +
+            'The pages may have changed layout — check them by hand using the links above.</span></div>';
+  else
+    html += '<div class="notice" style="margin-top:12px"><span>Everything TaxPot could read matches gov.uk' +
+            (unread.length ? ' (' + unread.length + ' figure' + (unread.length > 1 ? 's' : '') + ' could not be read)' : '') +
+            '. No change needed.</span></div>';
+  $("rate-result").innerHTML = html;
+  if ($("btn-apply-rates")) $("btn-apply-rates").addEventListener("click", applyFetchedRates);
+}
+
+function sourceLinks(){
+  return Object.keys(GOV_SOURCES).map(function(k){
+    var s = GOV_SOURCES[k];
+    return '<a href="' + s.page + '" target="_blank" rel="noopener">' + s.label + '</a>';
+  }).join(" · ");
+}
+
+async function checkRates(){
+  var btn = $("btn-check-rates");
+  btn.disabled = true; btn.textContent = "Checking gov.uk…";
+  $("rate-result").innerHTML = "";
+  var fetched = {}, failed = [];
+  var keys = Object.keys(GOV_SOURCES);
+  await Promise.all(keys.map(async function(k){
+    try {
+      var res = await fetch(GOV_SOURCES[k].url, { headers: { "Accept": "application/json" } });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      var text = govText(await res.json());
+      fetched[k] = k === "income-tax"    ? extractIncomeTax(text)
+                 : k === "ni"            ? extractNI(text)
+                 : k === "student-loan"  ? extractStudentLoans(text)
+                 : extractScottish(text, state.settings.year);
+    } catch (e){ failed.push(GOV_SOURCES[k].label); }
+  }));
+  btn.disabled = false; btn.textContent = "Check rates against gov.uk";
+
+  if (failed.length === keys.length){
+    $("rate-result").innerHTML = '<div class="notice alert" style="margin-top:14px"><span>' +
+      '<b>Could not reach gov.uk.</b> You may be offline, or opening this file directly from disk ' +
+      'rather than over http. Check by hand instead: ' + sourceLinks() + '</span></div>';
+    return;
+  }
+  state.fetched = fetched;
+  state.settings.lastRateCheck = new Date().toISOString();
+  persist();
+  var gate = canApplyFetched(state.settings.year, fetched);
+  var note = "Compared against gov.uk just now for " + state.settings.year + ", " +
+             y().regions[state.settings.region].label + "." +
+             (gate.publishedYear && !gate.ok ? " gov.uk is currently publishing " + gate.publishedYear + " figures." : "") +
+             (failed.length ? " Could not read: " + failed.join(", ") + "." : "");
+  renderRateRows(diffRates(y(), state.settings.region, fetched), note, gate);
+  renderFreshness();
+  renderStats();
+}
+
+function applyFetchedRates(){
+  if (!state.fetched) return;
+  var gate = canApplyFetched(state.settings.year, state.fetched);
+  if (!gate.ok){ toast(gate.reason); return; }
+  if (!confirm("Replace the built-in rates for " + state.settings.year +
+               " with the figures read from gov.uk? This changes every calculation in the app.")) return;
+  var updated = applyGovRates(y(), state.fetched, new Date().toISOString().slice(0, 10));
+  saveOverride(state.settings.year, updated);
+  if (state.pending) state.pending.r = splitPayment(state.pending.amount, totals().profit, cfg());
+  renderAll();
+  renderRateRows(diffRates(y(), state.settings.region, state.fetched), "Updated from gov.uk just now.",
+                 canApplyFetched(state.settings.year, state.fetched));
+  toast("Rates updated from gov.uk.");
+}
+
+function renderAll(){ renderSplit(); renderStats(); renderLedger(); renderForecast(); renderMethod(); renderFreshness(); }
+
+/* ---------- CSV ---------- */
+function parseCSV(text){
+  var rows = [], row = [], cur = "", q = false;
+  text = text.replace(/^﻿/, "");
+  for (var i = 0; i < text.length; i++){
+    var c = text[i];
+    if (q){
+      if (c === '"'){ if (text[i+1] === '"'){ cur += '"'; i++; } else q = false; }
+      else cur += c;
+    } else if (c === '"') q = true;
+    else if (c === ","){ row.push(cur); cur = ""; }
+    else if (c === "\n"){ row.push(cur); rows.push(row); row = []; cur = ""; }
+    else if (c !== "\r") cur += c;
+  }
+  if (cur !== "" || row.length){ row.push(cur); rows.push(row); }
+  return rows.filter(function(r){ return r.some(function(c){ return String(c).trim() !== ""; }); });
+}
+function stageCSV(text, filename){
+  var rows = parseCSV(text);
+  if (rows.length < 2){ toast("That file has no rows we can read."); return; }
+  var head = rows[0];
+  var iAmt  = findColumn(head, ["amount","paid in","money in","value"]);
+  var iDate = findColumn(head, ["date","completed date","started date","transaction date"]);
+  var iDesc = findColumn(head, ["name","description","merchant","payee","counterparty","reference","notes"]);
+  if (iAmt < 0){ toast("Could not find an amount column in that CSV."); return; }
+
+  var items = [];
+  for (var r = 1; r < rows.length; r++){
+    var raw = String(rows[r][iAmt] || "").replace(/[£$€,\s]/g, "");
+    var amt = parseFloat(raw);
+    if (!isFinite(amt) || amt === 0) continue;
+    var d = iDate >= 0 ? parseBankDate(rows[r][iDate]) : null;
+    if (!d || isNaN(d.getTime())) d = new Date();
+    items.push({
+      pick: true,
+      kind: amt > 0 ? "income" : "expense",
+      amount: Math.abs(amt),
+      date: d.toISOString(),
+      desc: (iDesc >= 0 ? String(rows[r][iDesc] || "").trim() : "") || "Imported"
+    });
+  }
+  if (!items.length){ toast("No usable transactions found in that file."); return; }
+  state.staged = items;
+  $("import-msg").textContent = "Found " + items.length + " transactions in " + filename +
+    ". Money in is treated as income, money out as an expense — change any that are wrong, and untick anything personal.";
+  $("import-out").hidden = false;
+  renderStaged();
+}
+function renderStaged(){
+  var html = '<table><thead><tr>'+
+             '<th scope="col"><label><input type="checkbox" id="pick-all" checked aria-label="Select all transactions"></label></th>'+
+             '<th scope="col">Date</th><th scope="col">Description</th>'+
+             '<th scope="col" class="n">Amount</th><th scope="col">Treat as</th></tr></thead><tbody>';
+  state.staged.forEach(function(it, i){
+    var when = new Date(it.date).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"2-digit"});
+    var desc = it.desc.slice(0,44);
+    html += '<tr><td><label>'+
+      '<input type="checkbox" data-pick="'+i+'"'+(it.pick?" checked":"")+
+      ' aria-label="Import '+esc(desc)+', '+money(it.amount)+' on '+when+'"></label></td>'+
+      '<td>'+when+'</td>'+
+      '<td>'+esc(desc)+'</td><td class="n">'+money(it.amount)+'</td>'+
+      '<td><select data-kind="'+i+'" aria-label="How to treat '+esc(desc)+'">'+
+      '<option value="income"'+(it.kind==="income"?" selected":"")+'>Income</option>'+
+      '<option value="expense"'+(it.kind==="expense"?" selected":"")+'>Expense</option>'+
+      '<option value="skip">Ignore</option></select></td></tr>'; });
+  $("import-preview").innerHTML = html + '</tbody></table>';
+}
+
+/* ---------- share card ---------- */
+/* Layout follows the Canva reference in brand/share-card-reference.png.
+   Drawn in code rather than shipped as an image, because the figures have to be
+   the viewer's own. */
+var CARD = {
+  w: 1600, h: 900,
+  bg: "#0A1210", rule: "#22302B", mint: "#4CC7A5",
+  text: "#E7EEEA", muted: "#859892", tax: "#E09A4E", loan: "#A79FE4", pension: "#5FB6D4",
+  padX: 114, split: 800, colValue: 904, colLabel: 1150, rowTop: 380, rowGap: 115
+};
+
+/* One definition of the mark, used by the header SVG, the favicon, the app icons
+   and the share card, so they cannot drift apart. Drawn on a 24x24 grid. */
+var MARK_PATH = "M8 5h8 M8.5 5v1.5a7 7 0 1 0 7 0V5 M7 12.5h10";
+
+function drawPotMark(x, cx, cy, size, colour){
+  var s = size / 24;
+  x.save();
+  x.translate(cx - size / 2, cy - size / 2); x.scale(s, s);
+  x.strokeStyle = colour; x.lineWidth = 2; x.lineCap = "round"; x.lineJoin = "round";
+  x.stroke(new Path2D(MARK_PATH));
+  x.restore();
+}
+
+function shareCardRows(){
+  var t = totals(), rows = [];
+  if (state.pending){
+    var r = state.pending.r;
+    rows.push({ label: "KEPT",         value: money(r.keep),        colour: CARD.mint });
+    rows.push({ label: "TAX",          value: money(r.tax + r.ni),  colour: CARD.tax });
+    if (state.settings.plan !== "none")
+      rows.push({ label: "STUDENT LOAN", value: money(r.loan),      colour: CARD.loan });
+    if (r.pension > 0)
+      rows.push({ label: "PENSION",     value: money(r.pension),    colour: CARD.pension });
+  } else {
+    var lia = liabilityFor(t.profit, cfg());
+    rows.push({ label: "PROFIT",    value: money0(t.profit),                       colour: CARD.mint });
+    rows.push({ label: "SET ASIDE", value: money0(lia.tax + lia.ni),               colour: CARD.tax });
+    rows.push({ label: "STUDENT LOAN", value: money0(lia.loan),                    colour: CARD.loan });
+  }
+  return rows;
+}
+
+function shareCard(){
+  var t = totals();
+  var c = document.createElement("canvas"); c.width = CARD.w; c.height = CARD.h;
+  var x = c.getContext("2d");
+
+  function paint(){
+    x.fillStyle = CARD.bg; x.fillRect(0, 0, CARD.w, CARD.h);
+    x.fillStyle = CARD.mint; x.fillRect(0, 0, CARD.w, 8);
+
+    // mark, then a hairline running to the right edge
+    drawPotMark(x, CARD.padX + 28, 122, 56, CARD.mint);
+    x.strokeStyle = CARD.mint; x.lineWidth = 2;
+    x.beginPath(); x.moveTo(CARD.padX + 95, 122); x.lineTo(CARD.w - CARD.padX + 50, 122); x.stroke();
+
+    // hero
+    var pct = state.pending && state.pending.amount > 0
+      ? (state.pending.r.keep / state.pending.amount * 100) : null;
+    var hero = pct !== null ? pct.toFixed(0) + "%" : money0(t.profit);
+    var size = 240;
+    x.fillStyle = CARD.mint;
+    do { x.font = "800 " + size + "px 'Bricolage Grotesque','Public Sans',sans-serif"; size -= 8; }
+    while (x.measureText(hero).width > 560 && size > 80);
+    x.textBaseline = "alphabetic";
+    x.fillText(hero, CARD.padX + 66, 545);
+
+    x.fillStyle = CARD.text; x.font = "400 32px 'Public Sans',sans-serif";
+    x.fillText(pct !== null ? "of my last payment was actually mine"
+                            : "of profit logged in " + state.settings.year,
+               CARD.padX + 66, 620);
+
+    // divider
+    x.strokeStyle = CARD.rule; x.lineWidth = 2;
+    x.beginPath(); x.moveTo(CARD.split, 262); x.lineTo(CARD.split, 694); x.stroke();
+
+    // colour-coded stack
+    shareCardRows().forEach(function(row, i){
+      var y = CARD.rowTop + i * CARD.rowGap;
+      x.fillStyle = row.colour;
+      x.font = "600 44px 'IBM Plex Mono',ui-monospace,monospace";
+      x.fillText(row.value, CARD.colValue, y);
+      x.fillStyle = CARD.muted;
+      x.font = "400 21px 'IBM Plex Mono',ui-monospace,monospace";
+      x.fillText(row.label, CARD.colLabel, y - 3);
+      x.strokeStyle = CARD.rule; x.lineWidth = 1;
+      x.beginPath(); x.moveTo(895, y + 40); x.lineTo(1391, y + 40); x.stroke();
+    });
+
+    // wordmark
+    x.font = "800 48px 'Bricolage Grotesque','Public Sans',sans-serif";
+    var wm = "taxpot.io", wmW = x.measureText(wm).width;
+    x.fillStyle = CARD.mint; x.fillText(wm, CARD.w - CARD.padX - wmW, 828);
+    drawPotMark(x, CARD.w - CARD.padX - wmW - 46, 812, 44, CARD.mint);
+
+    c.toBlob(function(blob){
+      var url = URL.createObjectURL(blob), a = document.createElement("a");
+      a.href = url; a.download = "taxpot-" + state.settings.year.replace("/", "-") + ".png";
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+      toast("Share card downloaded.");
+    });
+  }
+
+  // Wait for the webfonts, or the card silently renders in a fallback face.
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(paint, paint);
+  else paint();
+}
+
+/* ---------- export / restore ---------- */
+function download(name, mime, text){
+  var blob = new Blob([text], {type: mime}), url = URL.createObjectURL(blob);
+  var a = document.createElement("a"); a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+}
+
+/* ---------- wiring ---------- */
+var TAB_NAMES = ["split","ledger","forecast","data","method"];
+function setTab(name, opts){
+  TAB_NAMES.forEach(function(k){
+    var on = k === name, tab = $("tab-"+k);
+    tab.setAttribute("aria-selected", on ? "true" : "false");
+    tab.tabIndex = on ? 0 : -1;
+    $("p-"+k).hidden = !on;
+  });
+  if (opts && opts.focus) $("tab-"+name).focus();
+}
+TAB_NAMES.forEach(function(k){
+  $("tab-"+k).addEventListener("click", function(){ setTab(k); });
+});
+/* Roving-tabindex arrow-key navigation, per the WAI-ARIA APG tabs pattern:
+   Left/Right (wrapping) and Home/End move focus and activate the tab in one
+   step, matching how the mouse already behaves. */
+document.querySelector('[role="tablist"]').addEventListener("keydown", function(e){
+  var i = TAB_NAMES.indexOf(document.activeElement.id.replace("tab-", ""));
+  if (i < 0) return;
+  var next = null;
+  if (e.key === "ArrowRight") next = TAB_NAMES[(i + 1) % TAB_NAMES.length];
+  else if (e.key === "ArrowLeft") next = TAB_NAMES[(i - 1 + TAB_NAMES.length) % TAB_NAMES.length];
+  else if (e.key === "Home") next = TAB_NAMES[0];
+  else if (e.key === "End") next = TAB_NAMES[TAB_NAMES.length - 1];
+  if (!next) return;
+  e.preventDefault();
+  setTab(next, { focus: true });
+});
+
+$("btn-split").addEventListener("click", doSplit);
+$("amount").addEventListener("keydown", function(e){ if (e.key === "Enter") doSplit(); });
+
+$("btn-save").addEventListener("click", function(){
+  if (!state.pending) return;
+  state.entries.unshift({ id: uid(), kind:"income", date:new Date().toISOString(),
+    desc:"Payment", amount: state.pending.amount, year: state.settings.year });
+  state.pending = null; $("amount").value = "";
+  persist(); renderAll(); toast("Saved to your ledger.");
+});
+$("btn-share").addEventListener("click", shareCard);
+
+/* Income isn't categorised, so the field is disabled and inert rather than
+   hidden — hiding it would reflow the row's grid columns on every kind change. */
+function syncCategoryField(){
+  var isExpense = $("add-kind").value === "expense";
+  $("add-category").disabled = !isExpense;
+}
+$("add-kind").addEventListener("change", syncCategoryField);
+
+$("btn-add").addEventListener("click", function(){
+  var amt = n2($("add-amt").value);
+  if (amt <= 0){ $("add-amt").focus(); return; }
+  var kind = $("add-kind").value;
+  var entry = { id: uid(), kind: kind, date:new Date().toISOString(),
+    desc: $("add-desc").value.trim(), amount: amt, year: state.settings.year };
+  if (kind === "expense") entry.category = $("add-category").value;
+  state.entries.unshift(entry);
+  $("add-amt").value = ""; $("add-desc").value = "";
+  persist(); renderAll(); toast("Added.");
+});
+$("rows").addEventListener("click", function(e){
+  var b = e.target.closest("[data-del]"); if (!b) return;
+  var id = b.getAttribute("data-del");
+  state.entries = state.entries.filter(function(x){ return String(x.id) !== id; });
+  persist(); renderAll(); toast("Deleted.");
+});
+document.querySelector(".segbar").addEventListener("click", function(e){
+  var b = e.target.closest("[data-lf]"); if (!b) return;
+  state.ledgerFilter = b.getAttribute("data-lf");
+  this.querySelectorAll("button").forEach(function(x){
+    x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+  renderLedger();
+});
+
+/* settings */
+/* aria-modal="true" tells assistive tech the rest of the page is inert, so a
+   sighted keyboard user must not be able to Tab out into it either — that
+   split (screen reader blocked, keyboard free) is the classic "fake modal"
+   bug. This traps Tab/Shift+Tab inside the drawer and hands focus back to
+   whatever opened it on close. */
+var FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+var settingsOpener = null;
+function trapDrawerTab(e){
+  if (e.key !== "Tab") return;
+  var items = Array.prototype.slice.call($("scrim").querySelectorAll(FOCUSABLE));
+  if (!items.length) return;
+  var first = items[0], last = items[items.length - 1];
+  if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+}
+function openSettings(o){
+  $("scrim").hidden = !o;
+  if (o){
+    settingsOpener = document.activeElement;
+    $("set-other").focus();
+    document.addEventListener("keydown", trapDrawerTab);
+  } else {
+    document.removeEventListener("keydown", trapDrawerTab);
+    if (settingsOpener && document.body.contains(settingsOpener)) settingsOpener.focus();
+    settingsOpener = null;
+  }
+}
+$("btn-settings").addEventListener("click", function(){ openSettings(true); });
+$("btn-close-settings").addEventListener("click", function(){ openSettings(false); });
+$("scrim").addEventListener("click", function(e){ if (e.target === this) openSettings(false); });
+document.addEventListener("keydown", function(e){ if (e.key === "Escape" && !$("scrim").hidden) openSettings(false); });
+
+function bind(id, key, fn){
+  $(id).addEventListener("change", function(){
+    state.settings[key] = fn ? fn(this.type === "checkbox" ? this.checked : this.value)
+                             : this.value;
+    if (key === "year" || key === "region") syncRegionOptions();
+    if (state.pending) state.pending.r = splitPayment(state.pending.amount, totals().profit, cfg());
+    persist(); renderAll();
+  });
+}
+function syncRegionOptions(){
+  var Y = TAX_YEARS[state.settings.year];
+  if (!Y.regions[state.settings.region]) state.settings.region = "uk";
+  $("sel-region").innerHTML = Object.keys(Y.regions).map(function(k){
+    return '<option value="'+k+'">'+(k === "sco" ? "Scotland" : "Eng/Wal/NI")+'</option>'; }).join("");
+  $("sel-region").value = state.settings.region;
+}
+
+function wipe(){
+  if (!confirm("Delete every payment, expense and setting from this browser? This cannot be undone.")) return;
+  state.entries = []; state.settings = Object.assign({}, DEFAULTS); state.pending = null;
+  revertOverrides();
+  $("amount").value = ""; $("rate-result").innerHTML = "";
+  persist(); syncInputs(); syncRegionOptions(); renderAll();
+  openSettings(false); toast("Everything deleted.");
+}
+$("btn-wipe").addEventListener("click", wipe);
+$("btn-wipe-2").addEventListener("click", wipe);
+
+/* data tab */
+$("drop").addEventListener("click", function(){ $("file").click(); });
+$("drop").addEventListener("keydown", function(e){ if (e.key === "Enter" || e.key === " "){ e.preventDefault(); $("file").click(); } });
+["dragenter","dragover"].forEach(function(ev){ $("drop").addEventListener(ev, function(e){
+  e.preventDefault(); this.classList.add("over"); }); });
+["dragleave","drop"].forEach(function(ev){ $("drop").addEventListener(ev, function(e){
+  e.preventDefault(); this.classList.remove("over"); }); });
+$("drop").addEventListener("drop", function(e){
+  var f = e.dataTransfer.files[0]; if (f) readCSVFile(f); });
+$("file").addEventListener("change", function(){ if (this.files[0]) readCSVFile(this.files[0]); });
+function readCSVFile(f){
+  var fr = new FileReader();
+  fr.onload = function(){ stageCSV(String(fr.result), f.name); };
+  fr.onerror = function(){ toast("Could not read that file."); };
+  fr.readAsText(f);
+}
+$("import-preview").addEventListener("change", function(e){
+  var t = e.target;
+  if (t.id === "pick-all"){ state.staged.forEach(function(it){ it.pick = t.checked; }); renderStaged(); return; }
+  if (t.hasAttribute("data-pick")) state.staged[+t.getAttribute("data-pick")].pick = t.checked;
+  if (t.hasAttribute("data-kind")) state.staged[+t.getAttribute("data-kind")].kind = t.value;
+});
+$("btn-import").addEventListener("click", function(){
+  if (!state.staged) return;
+  var added = 0;
+  state.staged.forEach(function(it){
+    if (!it.pick || it.kind === "skip") return;
+    state.entries.push({ id: uid(), kind: it.kind, date: it.date, desc: it.desc,
+                         amount: it.amount, year: taxYearOf(it.date) }); added++;
+  });
+  state.staged = null; $("import-out").hidden = true; $("file").value = "";
+  persist(); renderAll(); toast("Imported " + added + " transactions.");
+});
+$("btn-import-cancel").addEventListener("click", function(){
+  state.staged = null; $("import-out").hidden = true; $("file").value = ""; });
+
+$("btn-export-json").addEventListener("click", function(){
+  download("taxpot-backup-" + new Date().toISOString().slice(0,10) + ".json", "application/json",
+    JSON.stringify({ app:"taxpot", version:1, exported:new Date().toISOString(),
+                     settings: state.settings, entries: state.entries }, null, 2));
+  toast("Backup downloaded.");
+});
+$("btn-export-csv").addEventListener("click", function(){
+  var lines = [["Date","Type","Category","Description","Amount","Tax year"]].concat(
+    state.entries.map(function(e){ return [new Date(e.date).toISOString().slice(0,10),
+      e.kind, e.kind === "expense" ? (EXPENSE_CATEGORY_LABEL[e.category] || "Uncategorised") : "",
+      (e.desc||"").replace(/"/g,'""'), n2(e.amount).toFixed(2), e.year||taxYearOf(e.date)]; }));
+  download("taxpot-ledger.csv","text/csv",
+    lines.map(function(r){ return r.map(function(c){ return '"'+c+'"'; }).join(","); }).join("\n"));
+  toast("Ledger exported.");
+});
+$("btn-restore").addEventListener("click", function(){ $("restore-file").click(); });
+$("restore-file").addEventListener("change", function(){
+  var f = this.files[0]; if (!f) return;
+  var fr = new FileReader();
+  fr.onload = function(){
+    try{
+      var d = JSON.parse(String(fr.result));
+      if (!d || d.app !== "taxpot" || !Array.isArray(d.entries)) throw new Error("bad file");
+      if (!confirm("Replace everything in this browser with the " + d.entries.length + " entries in this backup?")) return;
+      state.entries = d.entries;
+      state.settings = Object.assign({}, DEFAULTS, d.settings || {});
+      if (!TAX_YEARS[state.settings.year]) state.settings.year = DEFAULTS.year;
+      persist(); syncInputs(); syncRegionOptions(); renderAll();
+      toast("Restored " + d.entries.length + " entries.");
+    }catch(err){ toast("That does not look like a TaxPot backup."); }
+  };
+  fr.readAsText(f); this.value = "";
+});
+
+/* ---------- boot ---------- */
+function syncInputs(){
+  $("sel-year").value = state.settings.year;
+  $("set-plan").value = state.settings.plan;
+  $("set-other").value = state.settings.otherIncome;
+  $("set-pension").value = state.settings.pensionRate;
+  $("set-poa").value = state.settings.poaPaid;
+  $("set-trading").checked = !!state.settings.useTradingAllowance;
+}
+$("sel-year").innerHTML = Object.keys(TAX_YEARS).sort().reverse().map(function(k){
+  var suffix = TAX_YEARS[k].current ? " (now)" : (TAX_YEARS[k].provisional ? " (provisional)" : "");
+  return '<option value="'+k+'">'+k+suffix+'</option>'; }).join("");
+$("set-plan").innerHTML = Object.keys(PLAN_LABELS).map(function(k){
+  return '<option value="'+k+'">'+PLAN_LABELS[k]+'</option>'; }).join("");
+$("add-category").innerHTML = EXPENSE_CATEGORIES.map(function(c){
+  return '<option value="'+c.value+'">'+c.label+'</option>'; }).join("");
+syncCategoryField();
+
+load();
+loadOverrides();
+syncRegionOptions();
+syncInputs();
+
+$("btn-check-rates").addEventListener("click", checkRates);
+$("btn-revert-rates").addEventListener("click", function(){
+  if (!confirm("Discard the rates fetched from gov.uk and go back to the rates built into this app?")) return;
+  revertOverrides();
+  if (state.pending) state.pending.r = splitPayment(state.pending.amount, totals().profit, cfg());
+  $("rate-result").innerHTML = "";
+  renderAll();
+  toast("Built-in rates restored.");
+});
+bind("sel-year","year");
+bind("sel-region","region");
+bind("set-plan","plan");
+bind("set-other","otherIncome", function(v){ return Math.max(0, n2(v)); });
+bind("set-pension","pensionRate", function(v){ return clamp(n2(v), 0, 100); });
+bind("set-poa","poaPaid", function(v){ return Math.max(0, n2(v)); });
+bind("set-trading","useTradingAllowance", function(v){ return !!v; });
+
+if (!write("taxpot_probe", 1))
+  $("notices").innerHTML = '<div class="notice alert"><span>This browser is blocking local storage, so nothing you enter will be saved. Private browsing usually causes this.</span></div>';
+
+renderAll();
+})();
+</script>
+</body>
+</html>
