@@ -365,7 +365,7 @@ footer .shell{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap
 
     <dl class="glance">
       <div><dt>Dependencies</dt><dd class="num">0</dd></div>
-      <div><dt>Engine tests</dt><dd class="num">277</dd></div>
+      <div><dt>Engine tests</dt><dd class="num">289</dd></div>
       <div><dt>Tracker items</dt><dd class="num" id="glance-total">&mdash;</dd></div>
       <div><dt>Shipped</dt><dd class="num" id="glance-done">&mdash;</dd></div>
       <div><dt>Defects fixed</dt><dd class="num" id="glance-fixed">&mdash;</dd></div>
@@ -410,7 +410,7 @@ footer .shell{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap
         <h3>Principles</h3>
         <ul>
           <li><strong>One number first.</strong> &ldquo;Yours to keep&rdquo; is the headline; the tax breakdown is supporting evidence, not the point.</li>
-          <li><strong>Local-first.</strong> Financial data stays in the browser. No accounts, no server, no data to breach &mdash; which is also why there is no sync.</li>
+          <li><strong>Local-first.</strong> Financial data stays in the browser. No accounts or central data store, which is also why there is no sync.</li>
           <li><strong>Honest, not precise.</strong> A reserve estimate that is slightly conservative is useful. A number presented as exact when it is not is a liability.</li>
           <li><strong>Reserve, don&rsquo;t file.</strong> TaxPot tells you what to set aside. It does not submit anything to HMRC and should never imply that it does.</li>
         </ul>
@@ -419,7 +419,7 @@ footer .shell{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap
         <ul>
           <li>Not bookkeeping. No invoices, no clients, no double-entry.</li>
           <li>Not a Self Assessment filing tool. That is a regulated, HMRC-recognised integration and a different company.</li>
-          <li>Not multi-jurisdiction. England, Wales and Northern Ireland income tax bands only &mdash; Scotland has its own bands and is a tracked gap, not a silent one.</li>
+          <li>Not an international tax tool. It covers the UK, including Scotland&rsquo;s separate income tax bands; other countries need different rules.</li>
         </ul>
       </div>
 
@@ -772,7 +772,7 @@ footer .shell{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap
     <!-- ============ TRACKER ============ -->
     <section id="tracker">
       <div class="sec-head"><h2>Build tracker</h2><span class="tag">Live</span></div>
-      <div class="prose"><p>Every item in the product, with its real state. <strong>Shipped in v0.1</strong> came with the handover; <strong>built &amp; fixed</strong> is everything added or corrected since, across v0.2 and v1.0. Four of those were defects that testing found in code which already looked correct.</p></div>
+      <div class="prose"><p>Every item in the product, with its recorded state. <strong>Shipped in v0.1</strong> came with the handover; <strong>built &amp; fixed</strong> records additions and corrections through v1.8. Engine tests caught defects that were not visible in the interface.</p></div>
 
       <div class="progress-line" id="progress-line" role="img" aria-label="Proportion of tracker items complete"></div>
 
@@ -785,7 +785,7 @@ footer .shell{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap
       <div class="sec-head"><h2>Architecture</h2><span class="tag">Reference</span></div>
       <div class="prose">
         <p>One HTML file, no build step, no dependencies, no server. Open it and it runs; put it on any static host and it ships. That constraint is deliberate &mdash; it is what makes &ldquo;your data never leaves your browser&rdquo; a fact rather than a promise.</p>
-        <p>v0.1 pulled Tailwind, Alpine and Lucide from three CDNs. v0.2 drops all three for hand-written CSS and about 200 lines of vanilla JavaScript, which removes the offline failure and the third-party exposure at no cost in features.</p>
+        <p>v0.1 pulled Tailwind, Alpine and Lucide from three CDNs. The later build removed all three and uses hand-written CSS and vanilla JavaScript. The app logic works without those CDN dependencies.</p>
 
         <h3>Storage schema</h3>
         <p>This table drifted out of date as the app grew past v0.2 &mdash; it described a <code class="num">taxpot_history</code> key the app no longer writes. Corrected to match what <code class="num">index.html</code> actually persists today, across four <code class="num">localStorage</code> keys, all JSON.</p>
@@ -823,7 +823,7 @@ footer .shell{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap
         <h3>Files</h3>
         <ul>
           <li><code class="num">index.html</code> &mdash; the application. One file, no build step, no dependencies.</li>
-          <li><code class="num">tests/engine.test.js</code> &mdash; 277 assertions. Extracts the engine from <code class="num">index.html</code> between the <code class="num">ENGINE:START</code> / <code class="num">ENGINE:END</code> sentinels and runs it in Node, so the single-file architecture survives without giving up tests.</li>
+          <li><code class="num">tests/engine.test.js</code> &mdash; 289 assertions. Extracts the engine from <code class="num">index.html</code> between the <code class="num">ENGINE:START</code> / <code class="num">ENGINE:END</code> sentinels and runs it in Node, so the single-file architecture survives without giving up tests.</li>
           <li><code class="num">tools/sync-engine.js</code> &mdash; copies that same engine block into this page&rsquo;s demo, so the documentation can never show different arithmetic from the product.</li>
           <li><code class="num">tests/fixtures/</code> &mdash; saved copies of the real gov.uk text the rate extractors are tested against.</li>
           <li><code class="num">tools/smoke-extractors.js</code> &mdash; prints what the extractors read out of those fixtures, and diffs it against the built-in table.</li>
@@ -840,7 +840,7 @@ footer .shell{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap
 
         <h3>Known limits of the local-first choice</h3>
         <ul>
-          <li>Clearing site data destroys the user&rsquo;s history with no recovery. A JSON export is the mitigation and is tracked as <span class="num">T26</span>.</li>
+          <li>Clearing site data removes the local ledger. A previous JSON backup can restore it; without a backup, the data is lost.</li>
           <li>No cross-device use. A phone and a laptop are two separate ledgers.</li>
           <li>No analytics on user data, which means product decisions have to come from conversations rather than dashboards.</li>
         </ul>
@@ -853,15 +853,15 @@ footer .shell{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap
       <div class="prose">
         <h3>Where it stands</h3>
         <ul>
-          <li><strong>v1.0 &mdash; shipped.</strong> Correct engine, expenses, Self Assessment forecast, CSV import, Scottish bands, backup and restore, verified rate tables, 118 engine tests. This is the version that can carry a price.</li>
+          <li><strong>v1.0 &mdash; shipped.</strong> Correct engine, expenses, Self Assessment forecast, CSV import, Scottish bands, backup and restore, and verified rate tables.</li>
           <li><strong>v1.1 &mdash; shipped.</strong> The freshness reminder and the gov.uk rate refresh. Rates can no longer go quietly stale.</li>
           <li><strong>v1.2 &mdash; shipped.</strong> The next three tax years, each figure declaring whether it is legislated, assumed or estimated.</li>
-          <li><strong>v1.3 &mdash; sharpen.</strong> Rolling 12-month VAT test, expense categories, and an accessibility audit. Small, unglamorous, and all about trust.</li>
-          <li><strong>Then: get it in front of ten people.</strong> The remaining backlog is guesswork until real users have opinions. The one thing worth building without asking is whatever makes the export good enough for an accountant.</li>
+          <li><strong>v1.3&ndash;v1.8 &mdash; shipped.</strong> Brand assets, phone installation, a rolling 12-month VAT check, expense categories, accessibility fixes, and the build tracker.</li>
+          <li><strong>Next: get it in front of ten people.</strong> Test whether the reserve figure and accountant export answer real needs before building payment gating or sync.</li>
         </ul>
 
         <h3>The thing to watch</h3>
-        <p>Rates going stale was the biggest remaining risk, and it is now handled in the product rather than in someone&rsquo;s calendar &mdash; see <a href="#current">Staying current</a>. What the app still cannot do is add a <em>new</em> tax year on its own: when 6 April 2027 arrives it will say loudly that it has no rates for 2027/28, but a person still has to add the year. That is deliberate. Inventing a band structure from a scraped page is not something to automate.</p>
+        <p>Rates going stale remains a risk, so the app shows a freshness reminder and lets the user compare published figures against gov.uk &mdash; see <a href="#current">Staying current</a>. It carries 2027/28 to 2029/30 as provisional years, with each figure marked legislated, assumed or estimated. A person must verify and update those years as official rates are published. Years beyond 2029/30 are not generated automatically.</p>
 
         <h3>On the visual design</h3>
         <p>The share card and the launch graphic were laid out in Canva and exported to <code class="num">brand/</code>. The share card is kept as a <em>reference</em> rather than shipped as an image, because the numbers on it have to be the viewer&rsquo;s own &mdash; so the layout was rebuilt in <code class="num">canvas</code> and now renders at 1600&times;900 with the same colour-coded pots and hairline rules.</p>
@@ -879,7 +879,7 @@ footer .shell{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap
         <ul>
           <li>Does the user want a conservative buffer (round the reserve up) or the exact figure? Conservative builds trust; exact builds confidence. Worth testing with the first ten.</li>
           <li>Sole traders only, or limited companies too? The tax model is entirely different and would double the engine.</li>
-          <li>Is the &pound;1,000 trading allowance worth modelling, given it changes the answer to &ldquo;nothing&rdquo; for the smallest users &mdash; who are also the most likely to become paying ones later?</li>
+          <li>Do users understand when the built-in &pound;1,000 trading allowance beats their actual expenses?</li>
         </ul>
       </div>
     </section>
@@ -889,7 +889,7 @@ footer .shell{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap
 
 <footer>
   <div class="shell">
-    <span>TaxPot build book &mdash; prototype v0.2, handover v0.1.</span>
+    <span>TaxPot build book &mdash; app v1.8, handover v0.1.</span>
     <span>Estimates for reserving money. Not tax advice, and not a filing service.</span>
   </div>
 </footer>
@@ -1713,6 +1713,7 @@ function rateFreshness(now, years, lastCheckedISO){
     {id:"T57", s:"fixed", v:"v1.7", t:"Decimal keypad on money fields", d:"inputmode was only set on the headline amount field. Salary, payments-on-account and the ledger add-row now get it too, and the pension-percent field gets inputmode=numeric — several budget Android keyboards otherwise show a numeric pad with no decimal point on a bare type=number input."},
     {id:"T58", s:"fixed", v:"v1.7", t:"Touch target sizes", d:"The settings-gear button (34px) and each ledger row's delete button (25px) were both under the ~40–44px comfortable minimum — tighter than WCAG 2.5.8 requires but a real miss target on cheaper capacitive digitizers. Both are now 40–44px; the CSV-import checkboxes are wrapped in a 40x40 tap area rather than the bare native checkbox."},
     {id:"T59", s:"fixed", v:"v1.8", t:"Internal team dashboard", d:"team.html: a private, interactive status page for the four working roles (tax rates, build/docs, brand assets, rollout), each with a snapshot status and an always-visible next-action prompt you can copy straight into Claude Code. Not part of the public product; kept out of whatever gets published to GitHub Pages."},
+    {id:"T60", s:"fixed", v:"v1.8", t:"Public GitHub Pages release", d:"The public bhaisaab-pixel/taxpot repository contains only the app, this Build Book, the manifest and three icons. GitHub Pages serves it from main; team.html and ROLLOUT.md stay in the local source checkout."},
     {id:"T29", s:"fixed", v:"v1.0", t:"£1,000 trading allowance", d:"Either/or against expenses, and the app says which is worth more."},
     {id:"T30", s:"fixed", v:"v1.0", t:"VAT threshold watch", d:"Warns from 80% of £90,000 and again on crossing it."},
     {id:"T31", s:"fixed", v:"v1.0", t:"Class 2 voluntary NI prompt", d:"Below the small profits threshold, flags that paying voluntarily protects the State Pension record."},
